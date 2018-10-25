@@ -3,3 +3,6 @@
 *.asv
 *.zip
 *.jar
+timestepLog.txt
+simLog.txt
+distanceLog.txt
