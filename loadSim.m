@@ -51,7 +51,7 @@ function sim = loadSim(filePath)
                     
                 case 'MYTHIUMMASS'
                     assert(size(lineText,1)>=2,'Empty Mythium Tag');
-                    sim.gm(dataIndex,1) = str2double(lineText{2});
+                    sim.mm(dataIndex,1) = str2double(lineText{2});
             end
         end
     end

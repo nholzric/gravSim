@@ -101,7 +101,7 @@ for i = 1:size(aSpikeData.Indicies,1)
     velocitiesA = orbitData.v(indexA & timeIndex,:);
     velocitiesB = orbitData.v(indexB & timeIndex,:);
     
-    %c
+    %calculate escape velocity
     simIndex = find(simData.name == thisIDB);
     M = simData.gm(simIndex);
     escapeVB = sqrt(2*G*M./vecMag(positionsB-positionsA));
@@ -122,6 +122,8 @@ for i = 1:size(aSpikeData.Indicies,1)
     hold('off');
     title(sprintf('%.0f seconds : Object %d',thisTime,thisIDA));
     grid('on');
+    
+    exportPopulationFile(sprintf('.\\population_%.0f.txt',timeBounds(1)),timeBounds,simData,orbitData);
     
     theseDistances = vecMag(positionsA - positionsB);
 end

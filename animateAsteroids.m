@@ -1,4 +1,4 @@
-dataFilePath = '.\simLog.txt';
+dataFilePath = '.\population20249\simLog.txt';
 
 vecMag = @(v) sqrt(v(:,1).^2 + v(:,2).^2);
 % vecDiff = @(a,b) sqrt((a(:,1)-b(:,1)).^2 + (a(:,2)-b(:,2)).^2);
@@ -15,30 +15,34 @@ uniqueTimes = unique(orbitData.time);
 uniqueObjects = unique(orbitData.id);
 numEntriesPerTime = size(uniqueObjects,1); %assume file is sorted by time
 thisTimeIndex = 1:numEntriesPerTime;
+xLimits = [min(orbitData.p(:,1)),max(orbitData.p(:,1))];
+yLimits = [min(orbitData.p(:,2)),max(orbitData.p(:,2))];
 minMaxAMag = [min(orbitData.aMag);max(orbitData.aMag)];
-% figure(1);
-% for i = 1:size(uniqueTimes,1)
-%     xPlot = [orbitData.p(thisTimeIndex,1);];
-%     yPlot = [orbitData.p(thisTimeIndex,2);];
-%     cPlot = [orbitData.aMag(thisTimeIndex);];
-%     scatter(xPlot,yPlot,[],cPlot);
-% %     myYLim = ylim();
-% %     myXLim = xlim();
-% %     if(myYLim(2)-myYLim(1) > myXLim(2)- myXLim(1))
-% %         xCenter = (myXLim(2)+myXLim(1))/2;
-% %         extent = myYLim(2) - myYLim(1);
-% %         xlim(xCenter + 0.5*[-extent,extent]);
-% %     else
-% %         yCenter = (myYLim(2)+myYLim(1))/2;
-% %         extent = myXLim(2) - myXLim(1);
-% %         ylim(yCenter + 0.5*[-extent,extent]);
-% %     end
+figure(1);
+for i = 1:size(uniqueTimes,1)
+    xPlot = [orbitData.p(thisTimeIndex,1);];
+    yPlot = [orbitData.p(thisTimeIndex,2);];
+    cPlot = [orbitData.aMag(thisTimeIndex);];
+    scatter(xPlot,yPlot,[],cPlot);
+%     myYLim = ylim();
+%     myXLim = xlim();
+%     if(myYLim(2)-myYLim(1) > myXLim(2)- myXLim(1))
+%         xCenter = (myXLim(2)+myXLim(1))/2;
+%         extent = myYLim(2) - myYLim(1);
+%         xlim(xCenter + 0.5*[-extent,extent]);
+%     else
+%         yCenter = (myYLim(2)+myYLim(1))/2;
+%         extent = myXLim(2) - myXLim(1);
+%         ylim(yCenter + 0.5*[-extent,extent]);
+%     end
+
 %     ylim(8E5*[-1,1]); xlim(8E5*[-1,1]);
-%     pause(0.01);
-%     thisTimeIndex = thisTimeIndex + numEntriesPerTime;
-%     
-% 
-% end
+    ylim(yLimits); xlim(xLimits);
+    pause(0.01);
+    thisTimeIndex = thisTimeIndex + numEntriesPerTime;
+    
+
+end
 
 % if ~exist('passDistance','var')
 %     fprintf(1,'Calculating Pass Distances'); tic;
