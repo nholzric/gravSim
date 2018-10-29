@@ -14,7 +14,7 @@ public class Constants {
     private static double G = 6.67408*java.lang.Math.pow(10,-11) * java.lang.Math.pow(1.0/1000.0,3); //km^3 kg^-1 s^-2
     private static double gravityExponent = 2.0;
     
-    private static double M = 1*java.lang.Math.pow(10,-11); //m^? kg^-1 s^-2
+    private static double M = -1*java.lang.Math.pow(10,-11); //m^? kg^-1 s^-2 (negative for repulseive force)
     private static double mythiumExponent = Math.PI;
     
     private Constants(){ }

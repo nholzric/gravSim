@@ -401,7 +401,13 @@ public class Gravsim {
 	simParameters mySimParameters = loadSimFile(simFilePath);
 	//double JupiterMass = 1.898*Math.pow(10,27);
 	
-	Gravsim mySim = new Gravsim(new GravityBodyConcreteFactory(),
+	BodyFactory thisBodyFactory;
+	if(mySimParameters.useMythium)
+	    thisBodyFactory = new MythiumBodyConcreteFactory();
+	else
+	    thisBodyFactory = new GravityBodyConcreteFactory();
+	
+	Gravsim mySim = new Gravsim(thisBodyFactory,
 		mySimParameters.centralMass,
 		mySimParameters.myRandPopulationSpecs.randomSeed);
 	
