@@ -120,9 +120,10 @@ for i = 1:size(aSpikeData.Indicies,1)
     scatter(positionsB(:,1)-positionsA(:,1),positionsB(:,2)-positionsA(:,2),[],prctEscapeVB,'s','filled');
     colorbar();
     hold('off');
-    title(sprintf('%.0f seconds : Object %d',thisTime,thisIDA));
+    title(sprintf('%.0f seconds : Object %d, %d',thisTime,thisIDA,thisIDB));
     grid('on');
     
+    fprintf(1,'%.0f seconds: %d, %d\t',thisTime,thisIDA,thisIDB);
     exportPopulationFile(sprintf('.\\population_%.0f.txt',timeBounds(1)),timeBounds,simData,orbitData);
     
     theseDistances = vecMag(positionsA - positionsB);
