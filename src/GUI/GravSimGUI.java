@@ -16,6 +16,7 @@ import gravsim.BodyFactory;
 import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
+import gravsim.Coordinate;
 
 
 /**
@@ -97,7 +98,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jButton_generatePopulation = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton_loadPopulation = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButton_savePopulation = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
 
@@ -296,7 +297,12 @@ public class GravSimGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Save Population");
+        jButton_savePopulation.setText("Save Population");
+        jButton_savePopulation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_savePopulationActionPerformed(evt);
+            }
+        });
 
         jTable_population.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -346,7 +352,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton_loadPopulation)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(jButton_savePopulation)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -357,7 +363,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_loadPopulation)
-                    .addComponent(jButton2)))
+                    .addComponent(jButton_savePopulation)))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -478,11 +484,37 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         initializeMySim();
         
-        System.out.printf("Selected File Path: %s\n",file.getPath());
         mySim.importPopulation(file.getPath());
         
         populatePopulationTable(mySim.getBodyList());
     }//GEN-LAST:event_jButton_loadPopulationActionPerformed
+
+    private void jButton_savePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_savePopulationActionPerformed
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+        int returnValue = c.showSaveDialog(jPanel1);
+        if(returnValue != JFileChooser.APPROVE_OPTION)
+            return;
+        java.io.File file = c.getSelectedFile();
+        
+        initializeMySim();
+        DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
+        for(int i = 0; i < jTable_population.getRowCount(); i++){
+            String name = (String) tableModel.getValueAt(i,0);
+            double gravityMass = (double) tableModel.getValueAt(i,1);
+            double mythiumMass = (double) tableModel.getValueAt(i,2);
+            Coordinate position = new Coordinate(
+                (double) tableModel.getValueAt(i,3),
+                (double) tableModel.getValueAt(i,4));
+            Coordinate velocity = new Coordinate(
+                (double) tableModel.getValueAt(i,5),
+                (double) tableModel.getValueAt(i,6));
+            mySim.addNewBody(name,position,velocity,gravityMass,mythiumMass);
+        }
+        
+        mySim.exportPopulation(file.getPath());
+    }//GEN-LAST:event_jButton_savePopulationActionPerformed
 
     /**
      * @param args the command line arguments
@@ -522,9 +554,9 @@ public class GravSimGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton_generatePopulation;
     private javax.swing.JButton jButton_loadPopulation;
+    private javax.swing.JButton jButton_savePopulation;
     private javax.swing.JCheckBox jCheckBox_useMythium;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
