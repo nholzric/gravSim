@@ -89,4 +89,11 @@ public class Coordinate {
     }
     
     public double getMagnitude(){return Math.hypot(x,y);}
+    
+    public double getX(){
+        return x;
+    }
+    public double getY(){
+        return y;
+    }
 }

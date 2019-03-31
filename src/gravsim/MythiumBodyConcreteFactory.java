@@ -12,7 +12,7 @@ package gravsim;
  */
 public class MythiumBodyConcreteFactory implements BodyFactory{
     
-    MythiumBodyConcreteFactory(){}
+    public MythiumBodyConcreteFactory(){}
     
     public BodyInterface CreateNewBody(BodyFactory.BodySpecs newSpecs){
 	BodyInterface newBody = new Body(newSpecs.name, newSpecs.position, newSpecs.velocity);

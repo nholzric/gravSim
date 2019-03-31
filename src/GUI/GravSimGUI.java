@@ -5,17 +5,30 @@
  */
 package GUI;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
+import gravsim.Gravsim;
+import gravsim.BodyFactory;
+import gravsim.BodyInterface;
+import gravsim.MythiumBodyConcreteFactory;
+import gravsim.GravityBodyConcreteFactory;
+
+
 /**
  *
  * @author Nathan
  */
 public class GravSimGUI extends javax.swing.JFrame {
 
+    private gravsim.Gravsim mySim;
+    
     /**
      * Creates new form GravSimGUI
      */
     public GravSimGUI() {
         initComponents();
+        this.setLocationRelativeTo(null); //puts new window in center of screen
         
         setDefaultValues();
     }
@@ -138,6 +151,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTextField_rangeMythium.setText("jTextField10");
 
         jTextField_numberOfObjects.setText("jTextField11");
+        jTextField_numberOfObjects.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         jLabel14.setText("Random Seed");
@@ -145,6 +159,11 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTextField_randomSeed.setText("jTextField12");
 
         jButton_generatePopulation.setText("Generate Population");
+        jButton_generatePopulation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_generatePopulationActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -295,11 +314,11 @@ public class GravSimGUI extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "X Position", "Y Position", "X Velocity", "Y Velocity", "Gravity Mass", "Mythium Mass"
+                "Name", "Gravity Mass", "Mythium Mass", "X Position", "Y Position", "X Velocity", "Y Velocity"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -324,12 +343,12 @@ public class GravSimGUI extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                        .addComponent(jButton2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,8 +369,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,8 +391,7 @@ public class GravSimGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
+                .addComponent(jTabbedPane1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -386,6 +403,60 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    //Read population inputs to generate random population
+    private void jButton_generatePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_generatePopulationActionPerformed
+        //build new Gravsim object
+        gravsim.BodyFactory thisBodyFactory;
+        if(jCheckBox_useMythium.isSelected())
+            thisBodyFactory = new gravsim.MythiumBodyConcreteFactory();
+        else
+            thisBodyFactory = new gravsim.GravityBodyConcreteFactory();
+        
+        //https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
+        double centralMass = Double.parseDouble(jTextField_centralMass.getText());
+        long randomSeed = Long.parseLong(jTextField_randomSeed.getText());
+        
+        mySim = new Gravsim(thisBodyFactory,centralMass,randomSeed);
+        
+        //get parameters of population from GUI
+        double baselineRadius = Double.parseDouble(jTextField_baselineRadius.getText());
+        double rangeRadius = Double.parseDouble(jTextField_rangeRadius.getText());
+        double baselineMass = Double.parseDouble(jTextField_baselineMass.getText());
+        double rangeMass = Double.parseDouble(jTextField_rangeMass.getText());
+        double baselineMythium = Double.parseDouble(jTextField_baselineMythium.getText());
+        double rangeMythium = Double.parseDouble(jTextField_rangeMythium.getText());
+        
+        //parameters not currently exposed to user
+        double baselineAngle = 0.005*Math.PI;
+        double rangeAngle = 0.005*Math.PI;
+        
+        //use mySim to build population
+        int numberOfObjects = Integer.parseInt(jTextField_numberOfObjects.getText());
+        for(int i = 0; i < numberOfObjects; i++){
+            mySim.addNewRandomBody(
+                    baselineMass-rangeMass,baselineMass+rangeMass,
+                    baselineMythium-rangeMythium,baselineMythium+rangeMythium,
+                    baselineRadius-rangeRadius,baselineRadius+rangeRadius,
+                    baselineAngle-rangeAngle,baselineAngle+rangeAngle);
+        }
+        
+        //get population from mySim to display in GUI
+        ArrayList<BodyInterface> bodyList = mySim.getBodyList();
+        DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
+        tableModel.setRowCount(bodyList.size());
+        for(int i = 0; i < bodyList.size(); i++){
+            if(i > jTable_population.getRowCount()){  
+            }
+            tableModel.setValueAt(bodyList.get(i).getName(), i, 0);
+            tableModel.setValueAt(bodyList.get(i).getGravityMass(), i, 1);
+            tableModel.setValueAt(bodyList.get(i).getMythiumMass(), i, 2);
+            tableModel.setValueAt(bodyList.get(i).getPosition().getX(), i, 3);
+            tableModel.setValueAt(bodyList.get(i).getPosition().getY(), i, 4);
+            tableModel.setValueAt(bodyList.get(i).getVelocity().getX(), i, 5);
+            tableModel.setValueAt(bodyList.get(i).getVelocity().getY(), i, 6);
+        }
+    }//GEN-LAST:event_jButton_generatePopulationActionPerformed
 
     /**
      * @param args the command line arguments

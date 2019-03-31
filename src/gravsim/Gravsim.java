@@ -28,7 +28,7 @@ public class Gravsim {
     
     java.io.BufferedWriter myLogWriter;
     
-    Gravsim(BodyFactory myBodyFactory,double centralBodyMass,long randomSeed){
+    public Gravsim(BodyFactory myBodyFactory,double centralBodyMass,long randomSeed){
 	this.timeStep = 0.0;
 	this.currentTime = 0;
 	this.bodyList = new ArrayList<BodyInterface>();
@@ -189,6 +189,10 @@ public class Gravsim {
 	theseSpecs.mythiumMass = mythiumMass;
 	BodyInterface newBody = myBodyFactory.CreateNewBody(theseSpecs);
 	boolean add = bodyList.add(newBody);
+    }
+    
+    public ArrayList<BodyInterface> getBodyList(){
+        return bodyList;
     }
     
     private Coordinate getCircularVelocity(Coordinate position){

@@ -12,7 +12,7 @@ package gravsim;
  */
 public class GravityBodyConcreteFactory implements BodyFactory{
     
-    GravityBodyConcreteFactory(){}
+    public GravityBodyConcreteFactory(){}
     
     public BodyInterface CreateNewBody(BodyFactory.BodySpecs newSpecs){
 	BodyInterface newBody = new Body(newSpecs.name, newSpecs.position, newSpecs.velocity);
