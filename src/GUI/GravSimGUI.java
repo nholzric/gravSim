@@ -6,7 +6,10 @@
 package GUI;
 
 import java.util.ArrayList;
+
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import gravsim.Gravsim;
 import gravsim.BodyFactory;
@@ -93,7 +96,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTextField_randomSeed = new javax.swing.JTextField();
         jButton_generatePopulation = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        jButton_loadPopulation = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
@@ -286,7 +289,12 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addComponent(jButton_generatePopulation)))
         );
 
-        jButton1.setText("Load Population");
+        jButton_loadPopulation.setText("Load Population");
+        jButton_loadPopulation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_loadPopulationActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Save Population");
 
@@ -326,15 +334,6 @@ public class GravSimGUI extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(jTable_population);
-        if (jTable_population.getColumnModel().getColumnCount() > 0) {
-            jTable_population.getColumnModel().getColumn(0).setResizable(false);
-            jTable_population.getColumnModel().getColumn(1).setResizable(false);
-            jTable_population.getColumnModel().getColumn(2).setResizable(false);
-            jTable_population.getColumnModel().getColumn(3).setResizable(false);
-            jTable_population.getColumnModel().getColumn(4).setResizable(false);
-            jTable_population.getColumnModel().getColumn(5).setResizable(false);
-            jTable_population.getColumnModel().getColumn(6).setResizable(false);
-        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -345,7 +344,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(jButton_loadPopulation)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -357,7 +356,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(jButton_loadPopulation)
                     .addComponent(jButton2)))
         );
 
@@ -404,8 +403,8 @@ public class GravSimGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //Read population inputs to generate random population
-    private void jButton_generatePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_generatePopulationActionPerformed
+    //reads parameters from GUI to initialize mySim object
+    private void initializeMySim(){
         //build new Gravsim object
         gravsim.BodyFactory thisBodyFactory;
         if(jCheckBox_useMythium.isSelected())
@@ -418,8 +417,30 @@ public class GravSimGUI extends javax.swing.JFrame {
         long randomSeed = Long.parseLong(jTextField_randomSeed.getText());
         
         mySim = new Gravsim(thisBodyFactory,centralMass,randomSeed);
+    }
+    private void populatePopulationTable(ArrayList<BodyInterface> bodyList){
+        DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
+        tableModel.setRowCount(bodyList.size());
+        for(int i = 0; i < bodyList.size(); i++){
+            if(i > jTable_population.getRowCount()){  
+            }
+            tableModel.setValueAt(bodyList.get(i).getName(), i, 0);
+            tableModel.setValueAt(bodyList.get(i).getGravityMass(), i, 1);
+            tableModel.setValueAt(bodyList.get(i).getMythiumMass(), i, 2);
+            tableModel.setValueAt(bodyList.get(i).getPosition().getX(), i, 3);
+            tableModel.setValueAt(bodyList.get(i).getPosition().getY(), i, 4);
+            tableModel.setValueAt(bodyList.get(i).getVelocity().getX(), i, 5);
+            tableModel.setValueAt(bodyList.get(i).getVelocity().getY(), i, 6);
+        }
+    }
+    
+    //Read population inputs to generate random population
+    private void jButton_generatePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_generatePopulationActionPerformed
+        
+        initializeMySim();
         
         //get parameters of population from GUI
+        //https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
         double baselineRadius = Double.parseDouble(jTextField_baselineRadius.getText());
         double rangeRadius = Double.parseDouble(jTextField_rangeRadius.getText());
         double baselineMass = Double.parseDouble(jTextField_baselineMass.getText());
@@ -442,21 +463,26 @@ public class GravSimGUI extends javax.swing.JFrame {
         }
         
         //get population from mySim to display in GUI
-        ArrayList<BodyInterface> bodyList = mySim.getBodyList();
-        DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
-        tableModel.setRowCount(bodyList.size());
-        for(int i = 0; i < bodyList.size(); i++){
-            if(i > jTable_population.getRowCount()){  
-            }
-            tableModel.setValueAt(bodyList.get(i).getName(), i, 0);
-            tableModel.setValueAt(bodyList.get(i).getGravityMass(), i, 1);
-            tableModel.setValueAt(bodyList.get(i).getMythiumMass(), i, 2);
-            tableModel.setValueAt(bodyList.get(i).getPosition().getX(), i, 3);
-            tableModel.setValueAt(bodyList.get(i).getPosition().getY(), i, 4);
-            tableModel.setValueAt(bodyList.get(i).getVelocity().getX(), i, 5);
-            tableModel.setValueAt(bodyList.get(i).getVelocity().getY(), i, 6);
-        }
+        populatePopulationTable(mySim.getBodyList());
     }//GEN-LAST:event_jButton_generatePopulationActionPerformed
+    
+    //loads population from file
+    private void jButton_loadPopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_loadPopulationActionPerformed
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+        int returnValue = c.showOpenDialog(jPanel1);
+        if(returnValue != JFileChooser.APPROVE_OPTION)
+            return;
+        java.io.File file = c.getSelectedFile();
+        
+        initializeMySim();
+        
+        System.out.printf("Selected File Path: %s\n",file.getPath());
+        mySim.importPopulation(file.getPath());
+        
+        populatePopulationTable(mySim.getBodyList());
+    }//GEN-LAST:event_jButton_loadPopulationActionPerformed
 
     /**
      * @param args the command line arguments
@@ -496,9 +522,9 @@ public class GravSimGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton_generatePopulation;
+    private javax.swing.JButton jButton_loadPopulation;
     private javax.swing.JCheckBox jCheckBox_useMythium;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

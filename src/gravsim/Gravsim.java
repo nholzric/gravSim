@@ -202,7 +202,7 @@ public class Gravsim {
 	return Coordinate.RadialCoordinate(velocityMagnitude, position.getAngle()+Math.PI/2);
     }
     
-    private void exportPopulation(String filePath){
+    public void exportPopulation(String filePath){
 	try{
 	    java.io.BufferedWriter scenarioWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(new java.io.File(filePath))));
 
@@ -216,7 +216,7 @@ public class Gravsim {
 	}
 	
     }
-    private void importPopulation(String filePath){
+    public void importPopulation(String filePath){
 	try
 	{
 	    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(filePath));
