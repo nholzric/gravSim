@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.SwingWorker;
 import java.util.Iterator;
 import static java.lang.Math.ceil;
 
@@ -19,9 +20,6 @@ import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
-
-
-
 
 
 /**
@@ -462,10 +460,9 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 8, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -640,61 +637,77 @@ public class GravSimGUI extends javax.swing.JFrame {
         Gravsim.exportSimFile(file.getPath(),theseParameters);
     }//GEN-LAST:event_jMenuItem_saveSimFileActionPerformed
 
-    private void jMenuItem_runSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_runSimulationActionPerformed
-        JFileChooser c = new JFileChooser();
-        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-        int returnValue = c.showSaveDialog(jPanel1);
-        if(returnValue != JFileChooser.APPROVE_OPTION)
-            return;
-        java.io.File file = c.getSelectedFile();
-        
-        //sets BodyFactory, Central Mass, (and random seed which isn't used here) and loads bodies described in table to mySim
-        readPopulationToSim();
-        
-        //NOTE: the following code is heavily mirrored in Gravsim.main()
-        try{
-            java.io.BufferedWriter myLogWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(new java.io.File(file.getPath()))));
+    //https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ProgressBarDemoProject/src/components/ProgressBarDemo.java
+    class SimulationTask extends SwingWorker<Void,Void>{
+        //Main task - executed in background thread
+        @Override
+        public Void doInBackground(){
+            JFileChooser c = new JFileChooser();
+            c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+            int returnValue = c.showSaveDialog(jPanel1);
+            if(returnValue != JFileChooser.APPROVE_OPTION)
+                return null;
+            java.io.File file = c.getSelectedFile();
             
-            //write log file header
-            myLogWriter.write("Time\tMoon\tX\tY\tdX\tdY\tddX\tddY\n");
-            
-            //write initial position
-            mySim.getPositionStrings().stream().forEach((s)-> {
-                try{
-		    myLogWriter.write(String.format("0.0\t%s\n",s));
-		}catch(java.io.IOException e){
-		    System.out.println("Error writing line.");
-		}
-            });
-            
-            double thisTime = Double.parseDouble(jTextField_startTime.getText());
-            double suggestedTimeStep = Double.parseDouble(jTextField_timeStep.getText());
-            double maxSimTime = Double.parseDouble(jTextField_endTime.getText());
-            
-            //main loop
-            int step = 0;
-            double thisTimeStep = suggestedTimeStep;
-            int estimatedNumberOfSteps = Double.valueOf(ceil((maxSimTime-thisTime)/thisTimeStep)).intValue();
-            jProgressBar_simProgress.setMinimum(step);
-            jProgressBar_simProgress.setMaximum(estimatedNumberOfSteps);
-            while(thisTime < maxSimTime){
-                thisTimeStep = mySim.doTimestep(suggestedTimeStep);
-                thisTime += thisTimeStep;
-                
-                ++step;
-                Iterator<String> it = mySim.getPositionStrings().iterator();
-		while(it.hasNext()){
-		    myLogWriter.write(String.format("%f\t%s\n",thisTime,it.next()));
-		}
-                jProgressBar_simProgress.setValue(step);
+            //sets BodyFactory, Central Mass, (and random seed which isn't used here) and loads bodies described in table to mySim
+            readPopulationToSim();
+
+            //NOTE: the following code is heavily mirrored in Gravsim.main()
+            try{
+                java.io.BufferedWriter myLogWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(new java.io.File(file.getPath()))));
+
+                //write log file header
+                myLogWriter.write("Time\tMoon\tX\tY\tdX\tdY\tddX\tddY\n");
+
+                //write initial position
+                mySim.getPositionStrings().stream().forEach((s)-> {
+                    try{
+                        myLogWriter.write(String.format("0.0\t%s\n",s));
+                    }catch(java.io.IOException e){
+                        System.out.println("Error writing line.");
+                    }
+                });
+
+                double thisTime = Double.parseDouble(jTextField_startTime.getText());
+                double suggestedTimeStep = Double.parseDouble(jTextField_timeStep.getText());
+                double maxSimTime = Double.parseDouble(jTextField_endTime.getText());
+
+                //main loop
+                int step = 0;
+                double thisTimeStep = suggestedTimeStep;
+                int estimatedNumberOfSteps = Double.valueOf(ceil((maxSimTime-thisTime)/thisTimeStep)).intValue();
+                jProgressBar_simProgress.setString("");
+                jProgressBar_simProgress.setStringPainted(false);
+                jProgressBar_simProgress.setMinimum(step);
+                jProgressBar_simProgress.setMaximum(estimatedNumberOfSteps);
+                while(thisTime < maxSimTime){
+                    thisTimeStep = mySim.doTimestep(suggestedTimeStep);
+                    thisTime += thisTimeStep;
+
+                    ++step;
+                    Iterator<String> it = mySim.getPositionStrings().iterator();
+                    while(it.hasNext()){
+                        myLogWriter.write(String.format("%f\t%s\n",thisTime,it.next()));
+                    }
+                    jProgressBar_simProgress.setValue(step);
+                }
+
+                myLogWriter.close();
+                jProgressBar_simProgress.setString("Simulation Complete");
+                jProgressBar_simProgress.setStringPainted(true);
+            }
+            catch(java.io.IOException e){
+                System.out.println("Error writing file.");
             }
             
-            myLogWriter.close();
+            return null;
         }
-        catch(java.io.IOException e){
-            System.out.println("Error writing file.");
-        }
+    }
+    
+    private void jMenuItem_runSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_runSimulationActionPerformed
+        SimulationTask task = new SimulationTask();
+        task.execute();
     }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
 
     /**
