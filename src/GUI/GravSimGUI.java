@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.Iterator;
+import static java.lang.Math.ceil;
 
 import gravsim.Gravsim;
 import gravsim.BodyFactory;
@@ -17,6 +19,9 @@ import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
+
+
+
 
 
 /**
@@ -102,6 +107,8 @@ public class GravSimGUI extends javax.swing.JFrame {
         jButton_savePopulation = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
+        jProgressBar_simProgress = new javax.swing.JProgressBar();
+        jLabel15 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem_loadSimFile = new javax.swing.JMenuItem();
@@ -399,6 +406,8 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Config", jPanel1);
 
+        jLabel15.setText("Simulation Progress");
+
         jMenu1.setText("File");
 
         jMenuItem_loadSimFile.setText("Load Sim File");
@@ -422,6 +431,11 @@ public class GravSimGUI extends javax.swing.JFrame {
         jMenu2.setText("Simulation");
 
         jMenuItem_runSimulation.setText("Run Simulation");
+        jMenuItem_runSimulation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_runSimulationActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem_runSimulation);
 
         jMenuBar1.add(jMenu2);
@@ -434,14 +448,24 @@ public class GravSimGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 8, Short.MAX_VALUE))
         );
 
         pack();
@@ -526,7 +550,6 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         populatePopulationTable(mySim.getBodyList());
     }//GEN-LAST:event_jButton_loadPopulationActionPerformed
-
     private void jButton_savePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_savePopulationActionPerformed
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -536,7 +559,15 @@ public class GravSimGUI extends javax.swing.JFrame {
             return;
         java.io.File file = c.getSelectedFile();
         
-        initializeMySim();
+        //load bodies described in table to mySim
+        readPopulationToSim();
+        
+        mySim.exportPopulation(file.getPath());
+    }//GEN-LAST:event_jButton_savePopulationActionPerformed
+
+    //clear simulation (make a new one) and add bodies described in table to new simulation
+    private void readPopulationToSim(){
+        initializeMySim(); //sets BodyFactory and Central Mass (and random seed which isn't used here)
         DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
         for(int i = 0; i < jTable_population.getRowCount(); i++){
             String name = (String) tableModel.getValueAt(i,0);
@@ -550,10 +581,8 @@ public class GravSimGUI extends javax.swing.JFrame {
                 (double) tableModel.getValueAt(i,6));
             mySim.addNewBody(name,position,velocity,gravityMass,mythiumMass);
         }
-        
-        mySim.exportPopulation(file.getPath());
-    }//GEN-LAST:event_jButton_savePopulationActionPerformed
-
+    }
+    
     private void jMenuItem_loadSimFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_loadSimFileActionPerformed
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -581,7 +610,6 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTextField_numberOfObjects.setText(String.valueOf(theseParameters.myRandPopulationSpecs.numObjects));
         jTextField_randomSeed.setText(String.valueOf(theseParameters.myRandPopulationSpecs.numObjects));
     }//GEN-LAST:event_jMenuItem_loadSimFileActionPerformed
-
     private void jMenuItem_saveSimFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_saveSimFileActionPerformed
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -611,6 +639,63 @@ public class GravSimGUI extends javax.swing.JFrame {
         theseParameters.myRandPopulationSpecs = thesePopParameters;
         Gravsim.exportSimFile(file.getPath(),theseParameters);
     }//GEN-LAST:event_jMenuItem_saveSimFileActionPerformed
+
+    private void jMenuItem_runSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_runSimulationActionPerformed
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+        int returnValue = c.showSaveDialog(jPanel1);
+        if(returnValue != JFileChooser.APPROVE_OPTION)
+            return;
+        java.io.File file = c.getSelectedFile();
+        
+        //sets BodyFactory, Central Mass, (and random seed which isn't used here) and loads bodies described in table to mySim
+        readPopulationToSim();
+        
+        //NOTE: the following code is heavily mirrored in Gravsim.main()
+        try{
+            java.io.BufferedWriter myLogWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(new java.io.File(file.getPath()))));
+            
+            //write log file header
+            myLogWriter.write("Time\tMoon\tX\tY\tdX\tdY\tddX\tddY\n");
+            
+            //write initial position
+            mySim.getPositionStrings().stream().forEach((s)-> {
+                try{
+		    myLogWriter.write(String.format("0.0\t%s\n",s));
+		}catch(java.io.IOException e){
+		    System.out.println("Error writing line.");
+		}
+            });
+            
+            double thisTime = Double.parseDouble(jTextField_startTime.getText());
+            double suggestedTimeStep = Double.parseDouble(jTextField_timeStep.getText());
+            double maxSimTime = Double.parseDouble(jTextField_endTime.getText());
+            
+            //main loop
+            int step = 0;
+            double thisTimeStep = suggestedTimeStep;
+            int estimatedNumberOfSteps = Double.valueOf(ceil((maxSimTime-thisTime)/thisTimeStep)).intValue();
+            jProgressBar_simProgress.setMinimum(step);
+            jProgressBar_simProgress.setMaximum(estimatedNumberOfSteps);
+            while(thisTime < maxSimTime){
+                thisTimeStep = mySim.doTimestep(suggestedTimeStep);
+                thisTime += thisTimeStep;
+                
+                ++step;
+                Iterator<String> it = mySim.getPositionStrings().iterator();
+		while(it.hasNext()){
+		    myLogWriter.write(String.format("%f\t%s\n",thisTime,it.next()));
+		}
+                jProgressBar_simProgress.setValue(step);
+            }
+            
+            myLogWriter.close();
+        }
+        catch(java.io.IOException e){
+            System.out.println("Error writing file.");
+        }
+    }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
 
     /**
      * @param args the command line arguments
@@ -660,6 +745,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -678,6 +764,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JProgressBar jProgressBar_simProgress;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
