@@ -227,30 +227,30 @@ public class Gravsim {
 	}
     }
     
-    static class simParameters{
-	double centralMass = 1.898*Math.pow(10,27); //Jupiter
-	double startTime = 0;
-	double timeStep = 10*3.551*24*60*60/10000; //10 revs of Europa in 1000 steps
-	double endTime = 10*3.551*24*60*60; //10 revs of Europa's orbit in seconds
-	boolean useMythium = false;
-	randomPopulationParameters myRandPopulationSpecs;
+    public static class simParameters{
+	public double centralMass = 1.898*Math.pow(10,27); //Jupiter
+	public double startTime = 0;
+	public double timeStep = 10*3.551*24*60*60/10000; //10 revs of Europa in 1000 steps
+	public double endTime = 10*3.551*24*60*60; //10 revs of Europa's orbit in seconds
+	public boolean useMythium = false;
+	public randomPopulationParameters myRandPopulationSpecs;
     }
-    static class randomPopulationParameters{
-	double baselineRadius = 670900.0; //km
-	double rangeRadius = 0.01*baselineRadius;
+    public static class randomPopulationParameters{
+	public double baselineRadius = 670900.0; //km
+	public double rangeRadius = 0.01*baselineRadius;
 	//https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_area
 	//https://nssdc.gsfc.nasa.gov/planetary/factsheet/asteroidfact.html
-	double baselineMass = 1500 * Math.pow(10,15);//mass of the asteroid Siwa which has a surface area of roughly 33E3 km^2 or roughly the surface area of South Carolina
-	double rangeMass = 0.1*baselineMass;
-	double baselineMythium = 0.0;
-	double rangeMythium = 0;
-	double baselineAngle = 0.005*Math.PI;
+	public double baselineMass = 1500 * Math.pow(10,15);//mass of the asteroid Siwa which has a surface area of roughly 33E3 km^2 or roughly the surface area of South Carolina
+	public double rangeMass = 0.1*baselineMass;
+	public double baselineMythium = 0.0;
+	public double rangeMythium = 0;
+	public double baselineAngle = 0.005*Math.PI;
 	double rangeAngle = 0.005*Math.PI;
-	int numObjects = 50;
-	long randomSeed = 0;
+	public int numObjects = 50;
+	public long randomSeed = 0;
     }
     
-    private static simParameters loadSimFile(String simFilePath){
+    public static simParameters loadSimFile(String simFilePath){
 	simParameters theseParameters = new simParameters();
 	theseParameters.myRandPopulationSpecs = new randomPopulationParameters();
 	
@@ -366,6 +366,32 @@ public class Gravsim {
 	}
 	
 	return theseParameters;
+    }
+    public static void exportSimFile(String simFilePath,simParameters theseParameters){
+        try{
+            java.io.BufferedWriter simulationWriter = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(new java.io.File(simFilePath))));
+            
+            simulationWriter.write(String.format("CENTRALMASS\t%G\tkg\n",theseParameters.centralMass));
+            simulationWriter.write(String.format("STARTTIME\t%f\tseconds\n",theseParameters.startTime));
+            simulationWriter.write(String.format("TIMESTEP\t%f\tseconds\n",theseParameters.timeStep));
+            simulationWriter.write(String.format("ENDTIME\t%f\tseconds\n",theseParameters.endTime));
+            simulationWriter.write(String.format("USEMYTHIUM\t%d\t1/0\n\n",theseParameters.useMythium ? 1:0));
+            simulationWriter.write(String.format("BASELINERADIUS\t%.1f\tkm\n",theseParameters.myRandPopulationSpecs.baselineRadius));
+            simulationWriter.write(String.format("RANGERADIUS\t%.1f\tkm\n",theseParameters.myRandPopulationSpecs.rangeRadius));
+            simulationWriter.write(String.format("BASELINEMASS\t%G\tkg\n",theseParameters.myRandPopulationSpecs.baselineMass));
+            simulationWriter.write(String.format("RANGEMASS\t%G\tkg\n",theseParameters.myRandPopulationSpecs.rangeMass));
+            simulationWriter.write(String.format("BASELINEMYTHIUM\t%G\n",theseParameters.myRandPopulationSpecs.baselineMythium));
+            simulationWriter.write(String.format("RANGEMYTHIUM\t%G\n",theseParameters.myRandPopulationSpecs.rangeMythium));
+//            simulationWriter.write(String.format("BASELINEANGLE\t%.9f\n",theseParameters.myRandPopulationSpecs.baselineAngle));
+//            simulationWriter.write(String.format("RANGEANGLE\t%.9f\n",theseParameters.myRandPopulationSpecs.rangeAngle));
+            simulationWriter.write(String.format("NUMOBJECTS\t%d\n\n",theseParameters.myRandPopulationSpecs.numObjects));
+            simulationWriter.write(String.format("RANDOMSEED\t%d\n",theseParameters.myRandPopulationSpecs.randomSeed));
+            
+            simulationWriter.close();
+        }
+        catch(java.io.IOException e){
+            System.out.println("Error writing simulation file");
+        }
     }
     
     public static void main(String[] args) {

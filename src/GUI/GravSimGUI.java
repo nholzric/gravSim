@@ -62,6 +62,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem2 = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -101,6 +102,14 @@ public class GravSimGUI extends javax.swing.JFrame {
         jButton_savePopulation = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem_loadSimFile = new javax.swing.JMenuItem();
+        jMenuItem_saveSimFile = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem_runSimulation = new javax.swing.JMenuItem();
+
+        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -390,6 +399,35 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Config", jPanel1);
 
+        jMenu1.setText("File");
+
+        jMenuItem_loadSimFile.setText("Load Sim File");
+        jMenuItem_loadSimFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_loadSimFileActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem_loadSimFile);
+
+        jMenuItem_saveSimFile.setText("Save Sim File");
+        jMenuItem_saveSimFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_saveSimFileActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem_saveSimFile);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Simulation");
+
+        jMenuItem_runSimulation.setText("Run Simulation");
+        jMenu2.add(jMenuItem_runSimulation);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -516,6 +554,64 @@ public class GravSimGUI extends javax.swing.JFrame {
         mySim.exportPopulation(file.getPath());
     }//GEN-LAST:event_jButton_savePopulationActionPerformed
 
+    private void jMenuItem_loadSimFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_loadSimFileActionPerformed
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+        int returnValue = c.showOpenDialog(jPanel1);
+        if(returnValue != JFileChooser.APPROVE_OPTION)
+            return;
+        java.io.File file = c.getSelectedFile();
+        
+        Gravsim.simParameters theseParameters = Gravsim.loadSimFile(file.getPath());
+        
+        jTextField_centralMass.setText(String.valueOf(theseParameters.centralMass));
+        jTextField_startTime.setText(String.valueOf(theseParameters.startTime));
+        jTextField_timeStep.setText(String.valueOf(theseParameters.timeStep));
+        jTextField_endTime.setText(String.valueOf(theseParameters.endTime));
+        
+        jCheckBox_useMythium.setSelected(theseParameters.useMythium);
+        
+        jTextField_baselineRadius.setText(String.valueOf(theseParameters.myRandPopulationSpecs.baselineRadius));
+        jTextField_rangeRadius.setText(String.valueOf(theseParameters.myRandPopulationSpecs.rangeRadius));
+        jTextField_baselineMass.setText(String.valueOf(theseParameters.myRandPopulationSpecs.baselineMass));
+        jTextField_rangeMass.setText(String.valueOf(theseParameters.myRandPopulationSpecs.rangeMass));
+        jTextField_baselineMythium.setText(String.valueOf(theseParameters.myRandPopulationSpecs.baselineMythium));
+        jTextField_rangeMythium.setText(String.valueOf(theseParameters.myRandPopulationSpecs.rangeMythium));
+        jTextField_numberOfObjects.setText(String.valueOf(theseParameters.myRandPopulationSpecs.numObjects));
+        jTextField_randomSeed.setText(String.valueOf(theseParameters.myRandPopulationSpecs.numObjects));
+    }//GEN-LAST:event_jMenuItem_loadSimFileActionPerformed
+
+    private void jMenuItem_saveSimFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_saveSimFileActionPerformed
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
+        int returnValue = c.showSaveDialog(jPanel1);
+        if(returnValue != JFileChooser.APPROVE_OPTION)
+            return;
+        java.io.File file = c.getSelectedFile();
+        
+        Gravsim.simParameters theseParameters = new Gravsim.simParameters();
+        theseParameters.centralMass = Double.parseDouble(jTextField_centralMass.getText());
+        theseParameters.startTime = Double.parseDouble(jTextField_startTime.getText());
+        theseParameters.timeStep = Double.parseDouble(jTextField_timeStep.getText());
+        theseParameters.endTime = Double.parseDouble(jTextField_endTime.getText());
+        theseParameters.useMythium = jCheckBox_useMythium.isSelected();
+        
+        Gravsim.randomPopulationParameters thesePopParameters = new Gravsim.randomPopulationParameters();
+        thesePopParameters.baselineRadius = Double.parseDouble(jTextField_baselineRadius.getText());
+        thesePopParameters.rangeRadius = Double.parseDouble(jTextField_rangeRadius.getText());
+        thesePopParameters.baselineMass = Double.parseDouble(jTextField_baselineMass.getText());
+        thesePopParameters.rangeMass = Double.parseDouble(jTextField_rangeMass.getText());
+        thesePopParameters.baselineMythium = Double.parseDouble(jTextField_baselineMythium.getText());
+        thesePopParameters.rangeMythium = Double.parseDouble(jTextField_rangeMythium.getText());
+        thesePopParameters.numObjects = Integer.parseInt(jTextField_numberOfObjects.getText());
+        thesePopParameters.randomSeed = Long.parseLong(jTextField_randomSeed.getText());
+        
+        theseParameters.myRandPopulationSpecs = thesePopParameters;
+        Gravsim.exportSimFile(file.getPath(),theseParameters);
+    }//GEN-LAST:event_jMenuItem_saveSimFileActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -572,6 +668,13 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem_loadSimFile;
+    private javax.swing.JMenuItem jMenuItem_runSimulation;
+    private javax.swing.JMenuItem jMenuItem_saveSimFile;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
