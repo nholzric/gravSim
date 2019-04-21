@@ -12,6 +12,11 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingWorker;
 import javax.swing.JOptionPane;
+import javax.swing.text.PlainDocument;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Document;
 import java.util.Iterator;
 import static java.lang.Math.ceil;
 
@@ -21,6 +26,11 @@ import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
+
+
+
+
+
 
 
 
@@ -43,6 +53,106 @@ public class GravSimGUI extends javax.swing.JFrame {
         setToolTips();
     }
     
+    //https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
+    private numericDocumentFilter myScientificFilter = new numericDocumentFilter(new checkScientific());
+    private numericDocumentFilter myIntFilter = new numericDocumentFilter(new checkInt());
+    interface textCheck{
+        public boolean test(String text);
+    }
+    class checkScientific implements textCheck{
+        @Override
+        public boolean test(String text){
+            //allow empty text (hopefully temporarily)
+            if(text.isEmpty())
+                return true;
+            
+            try{
+                Double.parseDouble(text);
+                return true;
+            } catch(NumberFormatException e){
+                //allow typing scientific notation (with negative exponents)
+                if( text.endsWith("E") || text.endsWith("e") || text.endsWith("-"))
+                    return true;
+                
+                return false;
+            }
+        }
+    }
+    class checkInt implements textCheck{
+        @Override
+        public boolean test(String text){
+            //allow empty text (hopefully temporarily)
+            if(text.isEmpty())
+                return true;
+            
+            try{
+                Integer.parseInt(text);
+                return true;
+            } catch(NumberFormatException e){
+                return false;
+            }
+        }
+    }
+    class numericDocumentFilter extends DocumentFilter {
+        textCheck myTest;
+        numericDocumentFilter(textCheck thisTest){
+            myTest = thisTest;
+        }
+        
+        @Override
+        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs)
+                throws BadLocationException {
+            
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.insert(offset, text);
+            
+            if(myTest.test(sb.toString())){
+                super.insertString(fb,offset,text,attrs);
+            }
+            else{
+//                System.out.printf("Failed numericDocumentFilter.insertString: %s\n",sb.toString());
+//                JOptionPane.showMessageDialog(frame,
+//                    "Current population is empty",
+//                    "Unable to save population",
+//                    JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException{
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.replace(offset, offset + length, text);
+            
+            if(myTest.test(sb.toString())){
+                super.replace(fb,offset,length,text,attrs);
+            }
+            else{
+//                System.out.printf("Failed numericDocumentFilter.replace: %s\n",sb.toString());
+            }
+        }
+        
+        @Override
+        public void remove(FilterBypass fb, int offset, int length)
+                throws BadLocationException {
+            Document doc = fb.getDocument();
+            StringBuilder sb = new StringBuilder();
+            sb.append(doc.getText(0, doc.getLength()));
+            sb.delete(offset, offset + length);
+
+            if(myTest.test(sb.toString())){
+                super.remove(fb, offset, length);
+            }
+            else{
+//                System.out.printf("Failed numericDocumentFilter.remove: %s\n",sb.toString());
+            }
+        }
+    }
+    
     private void setDefaultValues(){
         jTextField_centralMass.setText("1.898E27");
         jTextField_startTime.setText("0");
@@ -61,6 +171,22 @@ public class GravSimGUI extends javax.swing.JFrame {
         //make table empty by default
         DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
         tableModel.setRowCount(0);
+        
+        //set Document Filter for fields which support scientific notation
+        ((PlainDocument) jTextField_centralMass.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_startTime.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_timeStep.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_endTime.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_baselineRadius.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_rangeRadius.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_baselineMass.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_rangeMass.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_baselineMythium.getDocument()).setDocumentFilter(myScientificFilter);
+        ((PlainDocument) jTextField_rangeMythium.getDocument()).setDocumentFilter(myScientificFilter);
+        
+        //set Document Filter for fields which only support ints
+        ((PlainDocument) jTextField_numberOfObjects.getDocument()).setDocumentFilter(myIntFilter);
+        ((PlainDocument) jTextField_randomSeed.getDocument()).setDocumentFilter(myIntFilter);
     }
     private void setToolTips(){
         jTextField_centralMass.setToolTipText("Mass around which objects orbit");
@@ -753,7 +879,6 @@ public class GravSimGUI extends javax.swing.JFrame {
         task.execute();
     }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
     private boolean isPopulationEmpty(){
-        System.out.printf("getRowCount() = %d",jTable_population.getRowCount());
         return jTable_population.getRowCount()==0;
     }
     
