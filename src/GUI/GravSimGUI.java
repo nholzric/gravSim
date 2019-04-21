@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 import java.util.Iterator;
 import static java.lang.Math.ceil;
 
@@ -20,6 +21,7 @@ import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
+
 
 
 /**
@@ -38,6 +40,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         this.setLocationRelativeTo(null); //puts new window in center of screen
         
         setDefaultValues();
+        setToolTips();
     }
     
     private void setDefaultValues(){
@@ -54,8 +57,32 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTextField_rangeMythium.setText("0");
         jTextField_numberOfObjects.setText("100");
         jTextField_randomSeed.setText("0");
+        
+        //make table empty by default
+        DefaultTableModel tableModel = (DefaultTableModel) jTable_population.getModel();
+        tableModel.setRowCount(0);
     }
-
+    private void setToolTips(){
+        jTextField_centralMass.setToolTipText("Mass around which objects orbit");
+        jTextField_startTime.setToolTipText("Simulation start time");
+        jTextField_timeStep.setToolTipText("Suggested timestep of simulation");
+        jTextField_endTime.setToolTipText("End time of simulation");
+        jCheckBox_useMythium.setToolTipText("Toggles mythium force");
+        
+        jTextField_baselineRadius.setToolTipText("Average orbital radius of generated population");
+        jTextField_rangeRadius.setToolTipText("Range of deviation from baseline radius");
+        jTextField_baselineMass.setToolTipText("Average mass of generated population");
+        jTextField_rangeMass.setToolTipText("Range of deviation from baseline mass");
+        jTextField_baselineMythium.setToolTipText("Average mythium mass of generated population");
+        jTextField_rangeMythium.setToolTipText("Range of deviation from baseline mythium mass");
+        jTextField_numberOfObjects.setToolTipText("Number of objects to randomly generate");
+        
+        jTextField_randomSeed.setToolTipText("Random seed for population generation");
+        jButton_generatePopulation.setToolTipText("Use above population parameters to randomly generate a population of objects");
+        jButton_loadPopulation.setToolTipText("Load population from file");
+        jButton_savePopulation.setToolTipText("Save population to file");
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -548,6 +575,14 @@ public class GravSimGUI extends javax.swing.JFrame {
         populatePopulationTable(mySim.getBodyList());
     }//GEN-LAST:event_jButton_loadPopulationActionPerformed
     private void jButton_savePopulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_savePopulationActionPerformed
+        if( isPopulationEmpty() ){
+            JOptionPane.showMessageDialog(this,
+                    "Current population is empty",
+                    "Unable to save population",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
         c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
@@ -706,10 +741,22 @@ public class GravSimGUI extends javax.swing.JFrame {
     }
     
     private void jMenuItem_runSimulationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_runSimulationActionPerformed
+        if( isPopulationEmpty() ){
+            JOptionPane.showMessageDialog(this,
+                    "Populate population to run a simulation",
+                    "Unable to run simulation",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         SimulationTask task = new SimulationTask();
         task.execute();
     }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
-
+    private boolean isPopulationEmpty(){
+        System.out.printf("getRowCount() = %d",jTable_population.getRowCount());
+        return jTable_population.getRowCount()==0;
+    }
+    
     /**
      * @param args the command line arguments
      */
