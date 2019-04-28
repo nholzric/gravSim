@@ -20,19 +20,18 @@ import javax.swing.text.Document;
 import java.util.Iterator;
 import static java.lang.Math.ceil;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 import gravsim.Gravsim;
 import gravsim.BodyFactory;
 import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
-
-
-
-
-
-
-
 
 /**
  *
@@ -51,7 +50,55 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         setDefaultValues();
         setToolTips();
+        
+        testJFreeChart();
     }
+    
+    private void testJFreeChart(){
+        XYSeries series = new XYSeries("Test Series");
+        series.add(1,1);
+        series.add(1,2);
+        series.add(2,1);
+        series.add(2,2);
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        
+        JFreeChart chart = ChartFactory.createScatterPlot("Test", "X Axis", "Y Axis", dataset);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        jPanel_graphs.setLayout(new java.awt.BorderLayout());
+        jPanel_graphs.add(chartPanel,java.awt.BorderLayout.CENTER);
+        jPanel_graphs.validate();
+    }
+//    class paintPanel extends javax.swing.JPanel{
+//        private int ovalX = 20;
+//        private int ovalY = 20;
+//        private int ovalW = 20;
+//        private int ovalH = 20;
+//        private final int bounds = 50;
+//        
+//        public paintPanel(){
+//            
+//        }
+//        
+//        public void updateChart(){
+//            this.moveOval();
+//            this.repaint();
+//        }
+//        
+//        private void moveOval(){
+//            java.util.Random rand = new java.util.Random();
+//            ovalX = rand.nextInt(bounds);
+//            ovalY = rand.nextInt(bounds);
+//            ovalW = rand.nextInt(bounds);
+//            ovalH = rand.nextInt(bounds);
+//        }
+//        
+//        @Override
+//        protected void paintComponent(java.awt.Graphics g){
+//            super.paintComponent(g);
+//            g.drawOval(20, 20, 20, 30);
+//        }
+//    }
     
     //https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
     private numericDocumentFilter myScientificFilter = new numericDocumentFilter(new checkScientific());
@@ -220,7 +267,7 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jMenuItem2 = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
+        jPanel_config = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -258,6 +305,10 @@ public class GravSimGUI extends javax.swing.JFrame {
         jButton_savePopulation = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
+        jPanel_simulationResults = new javax.swing.JPanel();
+        jPanel_graphs = new javax.swing.JPanel();
+        paintPanel_test = new GUI.paintPanel();
+        jButton_testRedraw = new javax.swing.JButton();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
         jLabel15 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -533,29 +584,89 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addComponent(jButton_savePopulation)))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel_configLayout = new javax.swing.GroupLayout(jPanel_config);
+        jPanel_config.setLayout(jPanel_configLayout);
+        jPanel_configLayout.setHorizontalGroup(
+            jPanel_configLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_configLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanel_configLayout.setVerticalGroup(
+            jPanel_configLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_configLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel_configLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_configLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Config", jPanel1);
+        jTabbedPane1.addTab("Config", jPanel_config);
+
+        javax.swing.GroupLayout jPanel_graphsLayout = new javax.swing.GroupLayout(jPanel_graphs);
+        jPanel_graphs.setLayout(jPanel_graphsLayout);
+        jPanel_graphsLayout.setHorizontalGroup(
+            jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 491, Short.MAX_VALUE)
+        );
+        jPanel_graphsLayout.setVerticalGroup(
+            jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 524, Short.MAX_VALUE)
+        );
+
+        jButton_testRedraw.setText("Test Redraw");
+        jButton_testRedraw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_testRedrawActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout paintPanel_testLayout = new javax.swing.GroupLayout(paintPanel_test);
+        paintPanel_test.setLayout(paintPanel_testLayout);
+        paintPanel_testLayout.setHorizontalGroup(
+            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paintPanel_testLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton_testRedraw)
+                .addContainerGap(332, Short.MAX_VALUE))
+        );
+        paintPanel_testLayout.setVerticalGroup(
+            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintPanel_testLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton_testRedraw)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel_simulationResultsLayout = new javax.swing.GroupLayout(jPanel_simulationResults);
+        jPanel_simulationResults.setLayout(jPanel_simulationResultsLayout);
+        jPanel_simulationResultsLayout.setHorizontalGroup(
+            jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel_graphs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel_simulationResultsLayout.setVerticalGroup(
+            jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
+                        .addComponent(jPanel_graphs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 11, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Simulation Result", jPanel_simulationResults);
 
         jLabel15.setText("Simulation Progress");
 
@@ -689,7 +800,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
         c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-        int returnValue = c.showOpenDialog(jPanel1);
+        int returnValue = c.showOpenDialog(jPanel_config);
         if(returnValue != JFileChooser.APPROVE_OPTION)
             return;
         java.io.File file = c.getSelectedFile();
@@ -712,7 +823,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
         c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-        int returnValue = c.showSaveDialog(jPanel1);
+        int returnValue = c.showSaveDialog(jPanel_config);
         if(returnValue != JFileChooser.APPROVE_OPTION)
             return;
         java.io.File file = c.getSelectedFile();
@@ -745,7 +856,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
         c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-        int returnValue = c.showOpenDialog(jPanel1);
+        int returnValue = c.showOpenDialog(jPanel_config);
         if(returnValue != JFileChooser.APPROVE_OPTION)
             return;
         java.io.File file = c.getSelectedFile();
@@ -772,7 +883,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         JFileChooser c = new JFileChooser();
         c.setFileSelectionMode(JFileChooser.FILES_ONLY);
         c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-        int returnValue = c.showSaveDialog(jPanel1);
+        int returnValue = c.showSaveDialog(jPanel_config);
         if(returnValue != JFileChooser.APPROVE_OPTION)
             return;
         java.io.File file = c.getSelectedFile();
@@ -806,7 +917,7 @@ public class GravSimGUI extends javax.swing.JFrame {
             JFileChooser c = new JFileChooser();
             c.setFileSelectionMode(JFileChooser.FILES_ONLY);
             c.setFileFilter(new FileNameExtensionFilter(".txt","txt"));
-            int returnValue = c.showSaveDialog(jPanel1);
+            int returnValue = c.showSaveDialog(jPanel_config);
             if(returnValue != JFileChooser.APPROVE_OPTION)
                 return null;
             java.io.File file = c.getSelectedFile();
@@ -878,6 +989,10 @@ public class GravSimGUI extends javax.swing.JFrame {
         SimulationTask task = new SimulationTask();
         task.execute();
     }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
+
+    private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
+        paintPanel_test.updateChart();
+    }//GEN-LAST:event_jButton_testRedrawActionPerformed
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
     }
@@ -923,6 +1038,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton_generatePopulation;
     private javax.swing.JButton jButton_loadPopulation;
     private javax.swing.JButton jButton_savePopulation;
+    private javax.swing.JButton jButton_testRedraw;
     private javax.swing.JCheckBox jCheckBox_useMythium;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -946,9 +1062,11 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_loadSimFile;
     private javax.swing.JMenuItem jMenuItem_runSimulation;
     private javax.swing.JMenuItem jMenuItem_saveSimFile;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel_config;
+    private javax.swing.JPanel jPanel_graphs;
+    private javax.swing.JPanel jPanel_simulationResults;
     private javax.swing.JProgressBar jProgressBar_simProgress;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -968,5 +1086,6 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_rangeRadius;
     private javax.swing.JTextField jTextField_startTime;
     private javax.swing.JTextField jTextField_timeStep;
+    private GUI.paintPanel paintPanel_test;
     // End of variables declaration//GEN-END:variables
 }
