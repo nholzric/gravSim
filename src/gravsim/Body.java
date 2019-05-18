@@ -30,6 +30,7 @@ public class Body implements BodyInterface{
     public String getName(){return name;}
     public Coordinate getPosition(){return position;}
     public Coordinate getVelocity(){return velocity;}
+    public Coordinate getAcceleration(){return acceleration;}
     
     public Coordinate calcDistanceVec(BodyInterface b){
 	Coordinate secondPosition = b.getPosition();

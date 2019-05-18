@@ -47,6 +47,7 @@ public interface BodyInterface {
     public double getMythiumMass();
     public Coordinate getPosition();
     public Coordinate getVelocity();
+    public Coordinate getAcceleration();
     public String getName();
     public Coordinate calcDistanceVec(BodyInterface b);
     public double calcDistance(Coordinate secondPosition);

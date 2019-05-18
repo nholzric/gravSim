@@ -55,6 +55,7 @@ public class MythiumBody implements BodyInterface{
     public double getMythiumMass(){return mythiumMass + childBodyObject.getMythiumMass();}
     public Coordinate getPosition(){return childBodyObject.getPosition();}
     public Coordinate getVelocity(){return childBodyObject.getVelocity();}
+    public Coordinate getAcceleration(){return childBodyObject.getAcceleration();};
     public String getName(){return childBodyObject.getName();}
     public Coordinate calcDistanceVec(BodyInterface b){return childBodyObject.calcDistanceVec(b);}
     public double calcDistance(Coordinate secondPosition){return childBodyObject.calcDistance(secondPosition);}
