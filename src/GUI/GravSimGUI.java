@@ -40,6 +40,7 @@ import gravsim.Coordinate;
 public class GravSimGUI extends javax.swing.JFrame {
 
     private gravsim.Gravsim mySim;
+    private SimulationResults simResults;
     
     /**
      * Creates new form GravSimGUI
@@ -616,7 +617,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         );
         jPanel_graphsLayout.setVerticalGroup(
             jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jButton_testRedraw.setText("Test Redraw");
@@ -638,7 +639,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         paintPanel_testLayout.setVerticalGroup(
             paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintPanel_testLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(497, Short.MAX_VALUE)
                 .addComponent(jButton_testRedraw)
                 .addContainerGap())
         );
@@ -660,9 +661,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
-                        .addComponent(jPanel_graphs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE)))
+                    .addComponent(jPanel_graphs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -945,6 +944,8 @@ public class GravSimGUI extends javax.swing.JFrame {
                 double suggestedTimeStep = Double.parseDouble(jTextField_timeStep.getText());
                 double maxSimTime = Double.parseDouble(jTextField_endTime.getText());
 
+                simResults = new SimulationResults();
+                
                 //main loop
                 int step = 0;
                 double thisTimeStep = suggestedTimeStep;
@@ -956,7 +957,8 @@ public class GravSimGUI extends javax.swing.JFrame {
                 while(thisTime < maxSimTime){
                     thisTimeStep = mySim.doTimestep(suggestedTimeStep);
                     thisTime += thisTimeStep;
-
+                    simResults.addRecord(mySim.getSimState(),thisTime);
+                    
                     ++step;
                     Iterator<String> it = mySim.getPositionStrings().iterator();
                     while(it.hasNext()){

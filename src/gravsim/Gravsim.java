@@ -17,6 +17,7 @@ import java.util.Random;
  * @author Nathan
  */
 public class Gravsim {
+    
     double timeStep;
     double maxAllowedAngularRate = 10.0*Math.PI/180.0; //5 deg/sec
     double minTimeStep = 10; //seconds
@@ -69,7 +70,6 @@ public class Gravsim {
 		if(i!=j){ //don't calculate acceleration of self-interaction
 		    BodyInterface.AccelerationInfo thisAcceleration = bodyList.get(i).calcAccelerationDetailed(bodyList.get(j));
 		    bodyDistances.add(j,thisAcceleration.getDistance());
-//		    bodyDistances.set(j,thisAcceleration.getDistance());
 		    totalAcceleration.addA(thisAcceleration.getA());
 		}
 		else
@@ -159,6 +159,15 @@ public class Gravsim {
 	    }
 	}
 	return distanceList;
+    }
+    
+    public ArrayList<State> getSimState(){
+        ArrayList<State> simState = new ArrayList<State>();
+        bodyList.stream().forEach((b) -> {
+            simState.add(new State(b.getName(),b.getPosition(),b.getVelocity())); 
+        });
+        
+        return simState;
     }
     
     //min-max angle in radians
