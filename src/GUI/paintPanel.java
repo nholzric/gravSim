@@ -13,13 +13,6 @@ import java.util.Iterator;
  * @author Nathan
  */
 public class paintPanel extends javax.swing.JPanel{
-    //TEST/////////////////////////
-    private int ovalX = 20;
-    private int ovalY = 20;
-    private int ovalW = 20;
-    private int ovalH = 20;
-    private final int bounds = 50;
-    ///////////////////////////////
     private ArrayList<AsteroidGraphic> theseAsteroids;
 
     private class AsteroidGraphic{
@@ -67,16 +60,16 @@ public class paintPanel extends javax.swing.JPanel{
 
     //TEST///////////////////////////////////////////////
     public void updateChart(){
-        this.moveOval();
+//        this.moveOval();
         this.repaint();
     }
-    private void moveOval(){
-        java.util.Random rand = new java.util.Random();
-        ovalX = rand.nextInt(bounds);
-        ovalY = rand.nextInt(bounds);
-        ovalW = rand.nextInt(bounds);
-        ovalH = rand.nextInt(bounds);
-    }
+//    private void moveOval(){
+//        java.util.Random rand = new java.util.Random();
+//        ovalX = rand.nextInt(bounds);
+//        ovalY = rand.nextInt(bounds);
+//        ovalW = rand.nextInt(bounds);
+//        ovalH = rand.nextInt(bounds);
+//    }
     ////////////////////////////////////////////////////
     
     public void drawScene(ArrayList<gravsim.State> simState,
@@ -120,22 +113,19 @@ public class paintPanel extends javax.swing.JPanel{
             ++objectIndex;
         }
         
-        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
+//        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
     }
     
     @Override
     protected void paintComponent(java.awt.Graphics g){
         super.paintComponent(g);
         
-        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
+//        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
         
         Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
         it.forEachRemaining((ag)->{
             g.drawOval(ag.getX(),ag.getY(),ag.getR(),ag.getR());
         });
         
-        //TEST/////////////////////////////////
-//        g.drawOval(ovalX, ovalY, ovalW, ovalH);
-        ///////////////////////////////////////
     }
 }

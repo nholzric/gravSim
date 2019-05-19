@@ -582,6 +582,8 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Config", jPanel_config);
 
+        jPanel_simulationResults.setLayout(new java.awt.GridLayout());
+
         jComboBox_uniqueObjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel_analysisGraphLayout = new javax.swing.GroupLayout(jPanel_analysisGraph);
@@ -618,6 +620,10 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addGap(235, 235, 235))
         );
 
+        jPanel_simulationResults.add(jPanel_analysis);
+
+        paintPanel_test.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+
         jButton_testRedraw.setText("Test Redraw");
         jButton_testRedraw.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -632,36 +638,17 @@ public class GravSimGUI extends javax.swing.JFrame {
             .addGroup(paintPanel_testLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton_testRedraw)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addContainerGap(370, Short.MAX_VALUE))
         );
         paintPanel_testLayout.setVerticalGroup(
             paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintPanel_testLayout.createSequentialGroup()
-                .addContainerGap(497, Short.MAX_VALUE)
+                .addContainerGap(519, Short.MAX_VALUE)
                 .addComponent(jButton_testRedraw)
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout jPanel_simulationResultsLayout = new javax.swing.GroupLayout(jPanel_simulationResults);
-        jPanel_simulationResults.setLayout(jPanel_simulationResultsLayout);
-        jPanel_simulationResultsLayout.setHorizontalGroup(
-            jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel_analysis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel_simulationResultsLayout.setVerticalGroup(
-            jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel_analysis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        jPanel_simulationResults.add(paintPanel_test);
 
         jTabbedPane1.addTab("Simulation Result", jPanel_simulationResults);
 
@@ -1026,9 +1013,8 @@ public class GravSimGUI extends javax.swing.JFrame {
         double yBuffer = 1.05*(maxY-minY);
         maxY += yBuffer;
         minY -= yBuffer;
-        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
+//        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
         paintPanel_test.drawScene(simState, minX, maxX, minY, maxY);
-//        paintPanel_test.updateChart();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
