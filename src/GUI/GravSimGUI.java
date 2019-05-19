@@ -32,6 +32,7 @@ import gravsim.BodyInterface;
 import gravsim.MythiumBodyConcreteFactory;
 import gravsim.GravityBodyConcreteFactory;
 import gravsim.Coordinate;
+import java.util.Set;
 
 /**
  *
@@ -308,6 +309,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jTable_population = new javax.swing.JTable();
         jPanel_simulationResults = new javax.swing.JPanel();
         jPanel_graphs = new javax.swing.JPanel();
+        jComboBox_uniqueObjects = new javax.swing.JComboBox<>();
         paintPanel_test = new GUI.paintPanel();
         jButton_testRedraw = new javax.swing.JButton();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
@@ -609,15 +611,23 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Config", jPanel_config);
 
+        jComboBox_uniqueObjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel_graphsLayout = new javax.swing.GroupLayout(jPanel_graphs);
         jPanel_graphs.setLayout(jPanel_graphsLayout);
         jPanel_graphsLayout.setHorizontalGroup(
             jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 491, Short.MAX_VALUE)
+            .addGroup(jPanel_graphsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(415, Short.MAX_VALUE))
         );
         jPanel_graphsLayout.setVerticalGroup(
             jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_graphsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(235, 235, 235))
         );
 
         jButton_testRedraw.setText("Test Redraw");
@@ -975,6 +985,8 @@ public class GravSimGUI extends javax.swing.JFrame {
                 System.out.println("Error writing file.");
             }
             
+            populateUniqueObjectsDropdown(simResults.getUniqueObjects());
+            
             return null;
         }
     }
@@ -992,6 +1004,15 @@ public class GravSimGUI extends javax.swing.JFrame {
         task.execute();
     }//GEN-LAST:event_jMenuItem_runSimulationActionPerformed
 
+    private void populateUniqueObjectsDropdown(Set<String> theseObjects){
+        jComboBox_uniqueObjects.removeAllItems();
+        
+        Iterator<String> it = theseObjects.iterator();
+        it.forEachRemaining((s)->{
+            jComboBox_uniqueObjects.addItem(s);
+        });
+    }
+    
     private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
         paintPanel_test.updateChart();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
@@ -1042,6 +1063,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton_savePopulation;
     private javax.swing.JButton jButton_testRedraw;
     private javax.swing.JCheckBox jCheckBox_useMythium;
+    private javax.swing.JComboBox<String> jComboBox_uniqueObjects;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

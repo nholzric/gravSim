@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import gravsim.State;
 import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  *
@@ -55,4 +56,7 @@ public class SimulationResults {
         }
     }
     
+    public Set<String> getUniqueObjects(){
+        return objectLocations.keySet();
+    }
 }
