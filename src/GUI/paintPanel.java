@@ -6,6 +6,7 @@
 package GUI;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -19,7 +20,29 @@ public class paintPanel extends javax.swing.JPanel{
     private int ovalH = 20;
     private final int bounds = 50;
     ///////////////////////////////
+    private ArrayList<AsteroidGraphic> theseAsteroids;
 
+    private class AsteroidGraphic{
+        private int r = 10;
+        private int x;
+        private int y;
+        
+        AsteroidGraphic(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        public int getX(){
+            return x;
+        }
+        public int getY(){
+            return y;
+        }
+        public int getR(){
+            return r;
+        }
+    }
+    
     private class LinearTransform{
         private double m;
         private double b;
@@ -39,7 +62,7 @@ public class paintPanel extends javax.swing.JPanel{
     }
     
     public paintPanel(){
-
+        theseAsteroids = new ArrayList<AsteroidGraphic>();
     }
 
     //TEST///////////////////////////////////////////////
@@ -84,16 +107,35 @@ public class paintPanel extends javax.swing.JPanel{
         LinearTransform xSceneToPixel = new LinearTransform(sceneMinX,(double) pixelMinX,sceneMaxX,(double) pixelMaxY);
         LinearTransform ySceneToPixel = new LinearTransform(sceneMinY,(double) pixelMinY,sceneMaxY,(double) pixelMaxY);
         
+        theseAsteroids = new ArrayList<AsteroidGraphic>();
+        Iterator<gravsim.State> it = simState.iterator();
+        int objectIndex = 0;
+        while(it.hasNext()){
+            gravsim.Coordinate thisP = it.next().getP();
+            int centerX = xSceneToPixel.transformInt(thisP.getX());
+            int centerY = ySceneToPixel.transformInt(thisP.getY());
+            
+            theseAsteroids.add(new AsteroidGraphic(centerX,centerY));
+            
+            ++objectIndex;
+        }
         
+        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
     }
     
     @Override
     protected void paintComponent(java.awt.Graphics g){
         super.paintComponent(g);
         
+        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
+        
+        Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
+        it.forEachRemaining((ag)->{
+            g.drawOval(ag.getX(),ag.getY(),ag.getR(),ag.getR());
+        });
+        
         //TEST/////////////////////////////////
-        g.drawOval(ovalX, ovalY, ovalW, ovalH);
-//        System.out.printf("paintPanel Size: %f, %f\n",this.getSize().getHeight(),this.getSize().getWidth());
+//        g.drawOval(ovalX, ovalY, ovalW, ovalH);
         ///////////////////////////////////////
     }
 }

@@ -1002,7 +1002,33 @@ public class GravSimGUI extends javax.swing.JFrame {
     }
     
     private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
-        paintPanel_test.updateChart();
+        ArrayList<gravsim.State> simState = simResults.getState();
+        double minX = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        Iterator<gravsim.State> it = simState.iterator();
+        while(it.hasNext()){
+            gravsim.Coordinate thisP = it.next().getP();
+            if(thisP.getX() < minX)
+                minX = thisP.getX();
+            if(thisP.getX() > maxX)
+                maxX = thisP.getX();
+            if(thisP.getY() < minY)
+                minY = thisP.getY();
+            if(thisP.getY() > maxY)
+                maxY = thisP.getY();
+        }
+        
+        double xBuffer = 1.05*(maxX-minX);
+        maxX += xBuffer;
+        minX -= xBuffer;
+        double yBuffer = 1.05*(maxY-minY);
+        maxY += yBuffer;
+        minY -= yBuffer;
+        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
+        paintPanel_test.drawScene(simState, minX, maxX, minY, maxY);
+//        paintPanel_test.updateChart();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;

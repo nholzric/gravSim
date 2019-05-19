@@ -59,4 +59,8 @@ public class SimulationResults {
     public Set<String> getUniqueObjects(){
         return objectLocations.keySet();
     }
+    
+    public ArrayList<gravsim.State> getState(){
+        return simStates.get(simStates.size()-1);
+    }
 }
