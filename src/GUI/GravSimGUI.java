@@ -67,40 +67,10 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         JFreeChart chart = ChartFactory.createScatterPlot("Test", "X Axis", "Y Axis", dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
-        jPanel_graphs.setLayout(new java.awt.BorderLayout());
-        jPanel_graphs.add(chartPanel,java.awt.BorderLayout.CENTER);
-        jPanel_graphs.validate();
+        jPanel_analysisGraph.setLayout(new java.awt.BorderLayout());
+        jPanel_analysisGraph.add(chartPanel,java.awt.BorderLayout.CENTER);
+        jPanel_analysisGraph.validate();
     }
-//    class paintPanel extends javax.swing.JPanel{
-//        private int ovalX = 20;
-//        private int ovalY = 20;
-//        private int ovalW = 20;
-//        private int ovalH = 20;
-//        private final int bounds = 50;
-//        
-//        public paintPanel(){
-//            
-//        }
-//        
-//        public void updateChart(){
-//            this.moveOval();
-//            this.repaint();
-//        }
-//        
-//        private void moveOval(){
-//            java.util.Random rand = new java.util.Random();
-//            ovalX = rand.nextInt(bounds);
-//            ovalY = rand.nextInt(bounds);
-//            ovalW = rand.nextInt(bounds);
-//            ovalH = rand.nextInt(bounds);
-//        }
-//        
-//        @Override
-//        protected void paintComponent(java.awt.Graphics g){
-//            super.paintComponent(g);
-//            g.drawOval(20, 20, 20, 30);
-//        }
-//    }
     
     //https://stackoverflow.com/questions/11093326/restricting-jtextfield-input-to-integers
     private numericDocumentFilter myScientificFilter = new numericDocumentFilter(new checkScientific());
@@ -308,8 +278,9 @@ public class GravSimGUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_population = new javax.swing.JTable();
         jPanel_simulationResults = new javax.swing.JPanel();
-        jPanel_graphs = new javax.swing.JPanel();
+        jPanel_analysis = new javax.swing.JPanel();
         jComboBox_uniqueObjects = new javax.swing.JComboBox<>();
+        jPanel_analysisGraph = new javax.swing.JPanel();
         paintPanel_test = new GUI.paintPanel();
         jButton_testRedraw = new javax.swing.JButton();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
@@ -613,19 +584,36 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jComboBox_uniqueObjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        javax.swing.GroupLayout jPanel_graphsLayout = new javax.swing.GroupLayout(jPanel_graphs);
-        jPanel_graphs.setLayout(jPanel_graphsLayout);
-        jPanel_graphsLayout.setHorizontalGroup(
-            jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_graphsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(415, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel_analysisGraphLayout = new javax.swing.GroupLayout(jPanel_analysisGraph);
+        jPanel_analysisGraph.setLayout(jPanel_analysisGraphLayout);
+        jPanel_analysisGraphLayout.setHorizontalGroup(
+            jPanel_analysisGraphLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel_graphsLayout.setVerticalGroup(
-            jPanel_graphsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_graphsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        jPanel_analysisGraphLayout.setVerticalGroup(
+            jPanel_analysisGraphLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel_analysisLayout = new javax.swing.GroupLayout(jPanel_analysis);
+        jPanel_analysis.setLayout(jPanel_analysisLayout);
+        jPanel_analysisLayout.setHorizontalGroup(
+            jPanel_analysisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_analysisLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_analysisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_analysisGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel_analysisLayout.createSequentialGroup()
+                        .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 403, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel_analysisLayout.setVerticalGroup(
+            jPanel_analysisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_analysisLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel_analysisGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(235, 235, 235))
         );
@@ -660,7 +648,7 @@ public class GravSimGUI extends javax.swing.JFrame {
             jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_simulationResultsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel_graphs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel_analysis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -671,7 +659,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel_simulationResultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel_graphs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel_analysis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1088,8 +1076,9 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_saveSimFile;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel_analysis;
+    private javax.swing.JPanel jPanel_analysisGraph;
     private javax.swing.JPanel jPanel_config;
-    private javax.swing.JPanel jPanel_graphs;
     private javax.swing.JPanel jPanel_simulationResults;
     private javax.swing.JProgressBar jProgressBar_simProgress;
     private javax.swing.JScrollPane jScrollPane1;
