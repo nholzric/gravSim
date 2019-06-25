@@ -113,14 +113,15 @@ public class paintPanel extends javax.swing.JPanel{
             ++objectIndex;
         }
         
-//        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
+        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
+        this.repaint();
     }
     
     @Override
     protected void paintComponent(java.awt.Graphics g){
         super.paintComponent(g);
         
-//        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
+        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
         
         Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
         it.forEachRemaining((ag)->{

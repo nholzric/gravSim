@@ -281,8 +281,10 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel_analysis = new javax.swing.JPanel();
         jComboBox_uniqueObjects = new javax.swing.JComboBox<>();
         jPanel_analysisGraph = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         paintPanel_test = new GUI.paintPanel();
         jButton_testRedraw = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
         jLabel15 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -582,7 +584,7 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Config", jPanel_config);
 
-        jPanel_simulationResults.setLayout(new java.awt.GridLayout());
+        jPanel_simulationResults.setLayout(new java.awt.GridLayout(1, 0));
 
         jComboBox_uniqueObjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -622,7 +624,18 @@ public class GravSimGUI extends javax.swing.JFrame {
 
         jPanel_simulationResults.add(jPanel_analysis);
 
-        paintPanel_test.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        paintPanel_test.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        javax.swing.GroupLayout paintPanel_testLayout = new javax.swing.GroupLayout(paintPanel_test);
+        paintPanel_test.setLayout(paintPanel_testLayout);
+        paintPanel_testLayout.setHorizontalGroup(
+            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 475, Short.MAX_VALUE)
+        );
+        paintPanel_testLayout.setVerticalGroup(
+            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 496, Short.MAX_VALUE)
+        );
 
         jButton_testRedraw.setText("Test Redraw");
         jButton_testRedraw.addActionListener(new java.awt.event.ActionListener() {
@@ -631,24 +644,32 @@ public class GravSimGUI extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout paintPanel_testLayout = new javax.swing.GroupLayout(paintPanel_test);
-        paintPanel_test.setLayout(paintPanel_testLayout);
-        paintPanel_testLayout.setHorizontalGroup(
-            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(paintPanel_testLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton_testRedraw)
-                .addContainerGap(370, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_testRedraw)))
+                .addContainerGap())
         );
-        paintPanel_testLayout.setVerticalGroup(
-            paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintPanel_testLayout.createSequentialGroup()
-                .addContainerGap(519, Short.MAX_VALUE)
-                .addComponent(jButton_testRedraw)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(paintPanel_test, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_testRedraw, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jPanel_simulationResults.add(paintPanel_test);
+        jPanel_simulationResults.add(jPanel1);
 
         jTabbedPane1.addTab("Simulation Result", jPanel_simulationResults);
 
@@ -1015,6 +1036,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         minY -= yBuffer;
 //        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
         paintPanel_test.drawScene(simState, minX, maxX, minY, maxY);
+//        paintPanel_test.updateChart();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
@@ -1086,6 +1108,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem_loadSimFile;
     private javax.swing.JMenuItem jMenuItem_runSimulation;
     private javax.swing.JMenuItem jMenuItem_saveSimFile;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel_analysis;
@@ -1097,6 +1120,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable_population;
     private javax.swing.JTextField jTextField_baselineMass;
