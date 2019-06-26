@@ -66,6 +66,17 @@ public class State {
     }
     
     public State copy(){
-        return new State(name,p.copy(),v.copy(),a.copy());
+//        System.out.printf("copy State\n");
+        if(a == null){
+            if(v == null){
+                return new State(name,p.copy());
+            }
+            else{
+                return new State(name,p.copy(),v.copy());
+            }
+        }
+        else{
+            return new State(name,p.copy(),v.copy(),a.copy());
+        }
     }
 }

@@ -284,7 +284,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         paintPanel_test = new GUI.paintPanel();
         jButton_testRedraw = new javax.swing.JButton();
-        jSlider1 = new javax.swing.JSlider();
+        jSlider_animationControl = new javax.swing.JSlider();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
         jLabel15 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -653,7 +653,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSlider_animationControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_testRedraw)))
                 .addContainerGap())
@@ -665,7 +665,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton_testRedraw, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSlider1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSlider_animationControl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -960,6 +960,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 jProgressBar_simProgress.setStringPainted(false);
                 jProgressBar_simProgress.setMinimum(step);
                 jProgressBar_simProgress.setMaximum(estimatedNumberOfSteps);
+                jSlider_animationControl.setMinimum(0);
                 while(thisTime < maxSimTime){
                     thisTimeStep = mySim.doTimestep(suggestedTimeStep);
                     thisTime += thisTimeStep;
@@ -971,6 +972,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                         myLogWriter.write(String.format("%f\t%s\n",thisTime,it.next()));
                     }
                     jProgressBar_simProgress.setValue(step);
+                    jSlider_animationControl.setMaximum(step);
                 }
 
                 myLogWriter.close();
@@ -1010,36 +1012,93 @@ public class GravSimGUI extends javax.swing.JFrame {
     }
     
     private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
-        ArrayList<gravsim.State> simState = simResults.getState();
-        double minX = Double.POSITIVE_INFINITY;
-        double maxX = Double.NEGATIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        Iterator<gravsim.State> it = simState.iterator();
-        while(it.hasNext()){
-            gravsim.Coordinate thisP = it.next().getP();
-            if(thisP.getX() < minX)
-                minX = thisP.getX();
-            if(thisP.getX() > maxX)
-                maxX = thisP.getX();
-            if(thisP.getY() < minY)
-                minY = thisP.getY();
-            if(thisP.getY() > maxY)
-                maxY = thisP.getY();
-        }
-        
-        double xBuffer = 1.05*(maxX-minX);
-        maxX += xBuffer;
-        minX -= xBuffer;
-        double yBuffer = 1.05*(maxY-minY);
-        maxY += yBuffer;
-        minY -= yBuffer;
-//        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
-        paintPanel_test.drawScene(simState, minX, maxX, minY, maxY);
-//        paintPanel_test.updateChart();
+//        drawLatestScene();
+        AnimateTask task = new AnimateTask();
+        task.execute();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
+    private void drawLatestScene(){
+        ArrayList<gravsim.State> simState = simResults.getState();
+        SceneBounds theseBounds = new SceneBounds(simResults.getState());
+
+//        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
+        paintPanel_test.drawScene(simState,
+                theseBounds.minX, theseBounds.maxX,
+                theseBounds.minY, theseBounds.maxY);
+    }
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
+    }
+    private class SceneBounds{
+        double minX;
+        double maxX;
+        double minY;
+        double maxY;
+        static final double defaultBufferSize = 1.05;
+        
+        public SceneBounds(ArrayList<gravsim.State> simState, double bufferSize){
+            this.minX = Double.POSITIVE_INFINITY;
+            this.maxX = Double.NEGATIVE_INFINITY;
+            this.minY = Double.POSITIVE_INFINITY;
+            this.maxY = Double.NEGATIVE_INFINITY;
+            Iterator<gravsim.State> it = simState.iterator();
+            while(it.hasNext()){
+                gravsim.Coordinate thisP = it.next().getP();
+                if(thisP.getX() < minX)
+                    minX = thisP.getX();
+                if(thisP.getX() > maxX)
+                    maxX = thisP.getX();
+                if(thisP.getY() < minY)
+                    minY = thisP.getY();
+                if(thisP.getY() > maxY)
+                    maxY = thisP.getY();
+            }
+
+            double xBuffer = bufferSize*(maxX-minX);
+            maxX += xBuffer;
+            minX -= xBuffer;
+            double yBuffer = bufferSize*(maxY-minY);
+            maxY += yBuffer;
+            minY -= yBuffer;
+        }
+        public SceneBounds(ArrayList<gravsim.State> simState){
+            this(simState, defaultBufferSize);
+        }
+    }
+    
+    class AnimateTask extends SwingWorker<Void,Void>{
+        private boolean continueAnimating;
+        
+        @Override
+        public Void doInBackground(){
+            this.continueAnimating = true;
+            
+//            System.out.printf("inAnimateTask.doInBackground: minValue = %d, thisValue = %d, maxValue = %d\n",
+//                    jSlider_animationControl.getMinimum(),jSlider_animationControl.getValue(),jSlider_animationControl.getMaximum());
+            
+            SceneBounds thisSceneBounds = null;
+            ArrayList<gravsim.State> simState = null;
+            int thisIndex;
+            while(continueAnimating &&
+                    jSlider_animationControl.getValue() < jSlider_animationControl.getMaximum()){
+                
+                thisIndex = jSlider_animationControl.getValue();
+                simState = simResults.getState(thisIndex);
+                thisSceneBounds = new SceneBounds(simState);
+                
+                paintPanel_test.drawScene(simState,
+                    thisSceneBounds.minX, thisSceneBounds.maxX,
+                    thisSceneBounds.minY, thisSceneBounds.maxY);
+                
+                jSlider_animationControl.setValue(thisIndex +1);
+                
+                try{
+                    java.util.concurrent.TimeUnit.MILLISECONDS.sleep(100);
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
     
     /**
@@ -1120,7 +1179,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSlider jSlider1;
+    private javax.swing.JSlider jSlider_animationControl;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable_population;
     private javax.swing.JTextField jTextField_baselineMass;

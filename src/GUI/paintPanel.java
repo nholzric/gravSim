@@ -58,19 +58,9 @@ public class paintPanel extends javax.swing.JPanel{
         theseAsteroids = new ArrayList<AsteroidGraphic>();
     }
 
-    //TEST///////////////////////////////////////////////
     public void updateChart(){
-//        this.moveOval();
         this.repaint();
     }
-//    private void moveOval(){
-//        java.util.Random rand = new java.util.Random();
-//        ovalX = rand.nextInt(bounds);
-//        ovalY = rand.nextInt(bounds);
-//        ovalW = rand.nextInt(bounds);
-//        ovalH = rand.nextInt(bounds);
-//    }
-    ////////////////////////////////////////////////////
     
     public void drawScene(ArrayList<gravsim.State> simState,
             double sceneMinX, double sceneMaxX, double sceneMinY, double sceneMaxY){
@@ -101,19 +91,21 @@ public class paintPanel extends javax.swing.JPanel{
         LinearTransform ySceneToPixel = new LinearTransform(sceneMinY,(double) pixelMinY,sceneMaxY,(double) pixelMaxY);
         
         theseAsteroids = new ArrayList<AsteroidGraphic>();
-        Iterator<gravsim.State> it = simState.iterator();
-        int objectIndex = 0;
-        while(it.hasNext()){
-            gravsim.Coordinate thisP = it.next().getP();
+//        Iterator<gravsim.State> it = simState.iterator();
+//        int objectIndex = 0;
+//        while(it.hasNext()){
+        for(int i = 0; i < simState.size(); i++){
+            gravsim.Coordinate thisP = simState.get(i).getP();
+//            gravsim.Coordinate thisP = it.next().getP();
             int centerX = xSceneToPixel.transformInt(thisP.getX());
             int centerY = ySceneToPixel.transformInt(thisP.getY());
             
             theseAsteroids.add(new AsteroidGraphic(centerX,centerY));
             
-            ++objectIndex;
+//            ++objectIndex;
         }
         
-        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
+//        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
         this.repaint();
     }
     
@@ -121,12 +113,14 @@ public class paintPanel extends javax.swing.JPanel{
     protected void paintComponent(java.awt.Graphics g){
         super.paintComponent(g);
         
-        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
+//        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
         
         Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
         it.forEachRemaining((ag)->{
             g.drawOval(ag.getX(),ag.getY(),ag.getR(),ag.getR());
+//            System.out.printf("(%d,%d)",ag.getX(),ag.getY());
         });
+//        System.out.printf("\n");
         
     }
 }

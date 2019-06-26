@@ -98,6 +98,7 @@ public class Coordinate {
     }
     
     public Coordinate copy(){
+//        System.out.printf("Coordinate.copy()\n");
         return new Coordinate(x,y);
     }
 }

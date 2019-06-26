@@ -39,7 +39,7 @@ public class SimulationResults {
     }
     
     public void addRecord(ArrayList<State> newStates, double newTime){
-        simStates.add(newStates);
+        simStates.add(this.cloneList(newStates));
         simTimes.add(newTime);
         
         
@@ -55,6 +55,16 @@ public class SimulationResults {
             objectLocations.get(thisName).stateIndex.add(objectIndex);
         }
     }
+    private static ArrayList<State> cloneList(ArrayList<State> originalList){
+        ArrayList<State> newList = new ArrayList<>(originalList);
+//        System.out.printf("ArrayList cloned\n");
+        for(int i = 0; i < newList.size(); i++){
+//            System.out.printf("copying %d\n",i);
+            newList.set(i, originalList.get(i).copy());
+        }
+//        System.out.printf("done SimulationResults.cloneList()\n");
+        return newList;
+    }
     
     public Set<String> getUniqueObjects(){
         return objectLocations.keySet();
@@ -62,5 +72,9 @@ public class SimulationResults {
     
     public ArrayList<gravsim.State> getState(){
         return simStates.get(simStates.size()-1);
+    }
+    public ArrayList<gravsim.State> getState(int index){
+//        System.out.printf("\n%f\n",simTimes.get(index));
+        return simStates.get(index);
     }
 }
