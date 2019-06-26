@@ -96,4 +96,8 @@ public class Coordinate {
     public double getY(){
         return y;
     }
+    
+    public Coordinate copy(){
+        return new Coordinate(x,y);
+    }
 }

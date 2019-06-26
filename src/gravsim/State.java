@@ -64,4 +64,8 @@ public class State {
     public String getName(){
         return this.name;
     }
+    
+    public State copy(){
+        return new State(name,p.copy(),v.copy(),a.copy());
+    }
 }
