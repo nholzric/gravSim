@@ -43,6 +43,8 @@ public class GravSimGUI extends javax.swing.JFrame {
     private gravsim.Gravsim mySim;
     private SimulationResults simResults;
     
+    private final String simulationTimeLabel = "Simulation Time: ";
+    
     /**
      * Creates new form GravSimGUI
      */
@@ -285,6 +287,9 @@ public class GravSimGUI extends javax.swing.JFrame {
         paintPanel_test = new GUI.paintPanel();
         jButton_playAnimation = new javax.swing.JButton();
         jSlider_animationControl = new javax.swing.JSlider();
+        jButton_stepForward = new javax.swing.JButton();
+        jButton_stepBackward = new javax.swing.JButton();
+        jLabel_simulationTime = new javax.swing.JLabel();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
         jLabel15 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -644,6 +649,28 @@ public class GravSimGUI extends javax.swing.JFrame {
             }
         });
 
+        jSlider_animationControl.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider_animationControlStateChanged(evt);
+            }
+        });
+
+        jButton_stepForward.setText(">");
+        jButton_stepForward.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_stepForwardActionPerformed(evt);
+            }
+        });
+
+        jButton_stepBackward.setText("<");
+        jButton_stepBackward.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_stepBackwardActionPerformed(evt);
+            }
+        });
+
+        jLabel_simulationTime.setText("Simulation Time: ---");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -653,7 +680,14 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jSlider_animationControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel_simulationTime, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton_stepBackward)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton_stepForward))
+                            .addComponent(jSlider_animationControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_playAnimation)))
                 .addContainerGap())
@@ -662,11 +696,17 @@ public class GravSimGUI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(paintPanel_test, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSlider_animationControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_playAnimation))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton_playAnimation, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSlider_animationControl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton_stepForward)
+                        .addComponent(jButton_stepBackward))
+                    .addComponent(jLabel_simulationTime))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel_simulationResults.add(jPanel1);
@@ -1012,18 +1052,27 @@ public class GravSimGUI extends javax.swing.JFrame {
     }
     
     private void jButton_playAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_playAnimationActionPerformed
-        System.out.printf("Play button\n");
-        Animator.getAnimateTask(this).execute();
+        if(!Animator.getAnimateTask(this).isAnimating()){
+            Animator.getAnimateTask(this).execute();
+        }else{
+            Animator.getAnimateTask(this).stopAnimation();
+        }
     }//GEN-LAST:event_jButton_playAnimationActionPerformed
-    private void drawLatestScene(){
-        ArrayList<gravsim.State> simState = simResults.getState();
-        SceneBounds theseBounds = new SceneBounds(simResults.getState());
 
-//        System.out.printf("[%f,%f] [%f,%f]\n",minX,maxX,minY,maxY);
-        paintPanel_test.drawScene(simState,
-                theseBounds.minX, theseBounds.maxX,
-                theseBounds.minY, theseBounds.maxY);
-    }
+    private void jSlider_animationControlStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider_animationControlStateChanged
+        if(!Animator.getAnimateTask(this).isAnimating()){
+            Animator.getAnimateTask(this).drawScene(jSlider_animationControl.getValue());
+        }
+    }//GEN-LAST:event_jSlider_animationControlStateChanged
+
+    private void jButton_stepBackwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_stepBackwardActionPerformed
+        jSlider_animationControl.setValue(jSlider_animationControl.getValue()-1);
+    }//GEN-LAST:event_jButton_stepBackwardActionPerformed
+
+    private void jButton_stepForwardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_stepForwardActionPerformed
+        jSlider_animationControl.setValue(jSlider_animationControl.getValue()+1);
+    }//GEN-LAST:event_jButton_stepForwardActionPerformed
+
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
     }
@@ -1065,7 +1114,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         }
     }
     private static class Animator extends SwingWorker<Void,Void>{
-        private boolean continueAnimating;
+        private boolean continueAnimating = false;
         private final int minAnimationRefreshPeriod = 10; //milliseconds
         
         private static Animator animateTaskSingleton = new Animator();
@@ -1084,19 +1133,12 @@ public class GravSimGUI extends javax.swing.JFrame {
 //            System.out.printf("inAnimateTask.doInBackground: minValue = %d, thisValue = %d, maxValue = %d\n",
 //                    jSlider_animationControl.getMinimum(),jSlider_animationControl.getValue(),jSlider_animationControl.getMaximum());
             
-            SceneBounds thisSceneBounds = null;
-            ArrayList<gravsim.State> simState = null;
             int thisIndex;
             while(continueAnimating &&
                     this.thisGUI.jSlider_animationControl.getValue() < this.thisGUI.jSlider_animationControl.getMaximum()){
                 
                 thisIndex = this.thisGUI.jSlider_animationControl.getValue();
-                simState = this.thisGUI.simResults.getState(thisIndex);
-                thisSceneBounds = new SceneBounds(simState);
-                
-                this.thisGUI.paintPanel_test.drawScene(simState,
-                    thisSceneBounds.minX, thisSceneBounds.maxX,
-                    thisSceneBounds.minY, thisSceneBounds.maxY);
+                this.drawScene(thisIndex);
 
                 this.thisGUI.jSlider_animationControl.setValue(thisIndex +1);
                 
@@ -1117,6 +1159,26 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         public void stopAnimation(){
             this.continueAnimating = false;
+        }
+        
+        public boolean isAnimating(){
+            return this.continueAnimating;
+        }
+        
+        public void drawScene(int thisIndex){
+            //don't animate a state that is outside the bounds
+            if(thisIndex >= this.thisGUI.simResults.simStatesSize())
+                thisIndex = this.thisGUI.simResults.simStatesSize()-1;
+            
+            ArrayList<gravsim.State> simState = this.thisGUI.simResults.getState(thisIndex);
+            SceneBounds thisSceneBounds = new SceneBounds(simState);
+
+            this.thisGUI.paintPanel_test.drawScene(simState,
+                thisSceneBounds.minX, thisSceneBounds.maxX,
+                thisSceneBounds.minY, thisSceneBounds.maxY);
+            
+            this.thisGUI.jLabel_simulationTime.setText(String.format("%s%f",
+                    this.thisGUI.simulationTimeLabel,this.thisGUI.simResults.getTime(thisIndex)));
         }
     }
     
@@ -1162,6 +1224,8 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton_loadPopulation;
     private javax.swing.JButton jButton_playAnimation;
     private javax.swing.JButton jButton_savePopulation;
+    private javax.swing.JButton jButton_stepBackward;
+    private javax.swing.JButton jButton_stepForward;
     private javax.swing.JCheckBox jCheckBox_useMythium;
     private javax.swing.JComboBox<String> jComboBox_uniqueObjects;
     private javax.swing.JLabel jLabel1;
@@ -1179,6 +1243,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel_simulationTime;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

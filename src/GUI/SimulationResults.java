@@ -77,4 +77,10 @@ public class SimulationResults {
 //        System.out.printf("\n%f\n",simTimes.get(index));
         return simStates.get(index);
     }
+    public double getTime(int index){
+        return simTimes.get(index);
+    }
+    public int simStatesSize(){
+        return this.simStates.size();
+    }
 }
