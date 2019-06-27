@@ -283,7 +283,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel_analysisGraph = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         paintPanel_test = new GUI.paintPanel();
-        jButton_testRedraw = new javax.swing.JButton();
+        jButton_playAnimation = new javax.swing.JButton();
         jSlider_animationControl = new javax.swing.JSlider();
         jProgressBar_simProgress = new javax.swing.JProgressBar();
         jLabel15 = new javax.swing.JLabel();
@@ -637,10 +637,10 @@ public class GravSimGUI extends javax.swing.JFrame {
             .addGap(0, 496, Short.MAX_VALUE)
         );
 
-        jButton_testRedraw.setText("Test Redraw");
-        jButton_testRedraw.addActionListener(new java.awt.event.ActionListener() {
+        jButton_playAnimation.setText("Play");
+        jButton_playAnimation.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_testRedrawActionPerformed(evt);
+                jButton_playAnimationActionPerformed(evt);
             }
         });
 
@@ -655,7 +655,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jSlider_animationControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_testRedraw)))
+                        .addComponent(jButton_playAnimation)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -664,7 +664,7 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addComponent(paintPanel_test, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton_testRedraw, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_playAnimation, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSlider_animationControl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -1011,10 +1011,10 @@ public class GravSimGUI extends javax.swing.JFrame {
         });
     }
     
-    private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
-//        drawLatestScene();
+    private void jButton_playAnimationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_playAnimationActionPerformed
+        System.out.printf("Play button\n");
         Animator.getAnimateTask(this).execute();
-    }//GEN-LAST:event_jButton_testRedrawActionPerformed
+    }//GEN-LAST:event_jButton_playAnimationActionPerformed
     private void drawLatestScene(){
         ArrayList<gravsim.State> simState = simResults.getState();
         SceneBounds theseBounds = new SceneBounds(simResults.getState());
@@ -1078,6 +1078,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         
         @Override
         public Void doInBackground(){
+            System.out.printf("Starting Animator.doInBackground()\n");
             this.continueAnimating = true;
             
 //            System.out.printf("inAnimateTask.doInBackground: minValue = %d, thisValue = %d, maxValue = %d\n",
@@ -1106,6 +1107,11 @@ public class GravSimGUI extends javax.swing.JFrame {
                     e.printStackTrace();
                 }
             }
+            
+            System.out.printf("Finished Animator.doInBackground()\n");
+            
+            animateTaskSingleton = new Animator();
+            
             return null;
         }
         
@@ -1154,8 +1160,8 @@ public class GravSimGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_generatePopulation;
     private javax.swing.JButton jButton_loadPopulation;
+    private javax.swing.JButton jButton_playAnimation;
     private javax.swing.JButton jButton_savePopulation;
-    private javax.swing.JButton jButton_testRedraw;
     private javax.swing.JCheckBox jCheckBox_useMythium;
     private javax.swing.JComboBox<String> jComboBox_uniqueObjects;
     private javax.swing.JLabel jLabel1;
