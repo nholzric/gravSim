@@ -14,6 +14,7 @@ import java.util.Iterator;
  */
 public class paintPanel extends javax.swing.JPanel{
     private ArrayList<AsteroidGraphic> theseAsteroids;
+//    private boolean isBusy = false;
 
     private class AsteroidGraphic{
         private int r = 10;
@@ -64,6 +65,12 @@ public class paintPanel extends javax.swing.JPanel{
     
     public void drawScene(ArrayList<gravsim.State> simState,
             double sceneMinX, double sceneMaxX, double sceneMinY, double sceneMaxY){
+//        if(isBusy){
+//            System.out.printf("paintPanel is busy in drawScene\n");
+//            return;
+//        }
+//        isBusy = true;
+        
         int pixelMaxX = this.getSize().width;
         int pixelMaxY = this.getSize().height;
         int pixelMinX = 0;
@@ -89,38 +96,52 @@ public class paintPanel extends javax.swing.JPanel{
         
         LinearTransform xSceneToPixel = new LinearTransform(sceneMinX,(double) pixelMinX,sceneMaxX,(double) pixelMaxY);
         LinearTransform ySceneToPixel = new LinearTransform(sceneMinY,(double) pixelMinY,sceneMaxY,(double) pixelMaxY);
-        
-        theseAsteroids = new ArrayList<AsteroidGraphic>();
-//        Iterator<gravsim.State> it = simState.iterator();
-//        int objectIndex = 0;
-//        while(it.hasNext()){
-        for(int i = 0; i < simState.size(); i++){
-            gravsim.Coordinate thisP = simState.get(i).getP();
-//            gravsim.Coordinate thisP = it.next().getP();
-            int centerX = xSceneToPixel.transformInt(thisP.getX());
-            int centerY = ySceneToPixel.transformInt(thisP.getY());
-            
-            theseAsteroids.add(new AsteroidGraphic(centerX,centerY));
-            
-//            ++objectIndex;
+        synchronized(this){
+//            System.out.printf("drawScene\t (x=%f)\n",simState.get(0).getP().getX());
+            theseAsteroids = new ArrayList<AsteroidGraphic>();
+    //        Iterator<gravsim.State> it = simState.iterator();
+    //        int objectIndex = 0;
+    //        while(it.hasNext()){
+            for(int i = 0; i < simState.size(); i++){
+                gravsim.Coordinate thisP = simState.get(i).getP();
+    //            gravsim.Coordinate thisP = it.next().getP();
+                int centerX = xSceneToPixel.transformInt(thisP.getX());
+                int centerY = ySceneToPixel.transformInt(thisP.getY());
+
+                theseAsteroids.add(new AsteroidGraphic(centerX,centerY));
+
+    //            ++objectIndex;
+            }
         }
         
 //        System.out.printf("drawScene: theseAsteroids.size() = %d\n", theseAsteroids.size());
+//        isBusy = false;
+        
         this.repaint();
     }
     
     @Override
     protected void paintComponent(java.awt.Graphics g){
+//        if(isBusy){
+//            System.out.printf("paintPanel is busy in paintComponent\n");
+//            return;
+//        }
+//        isBusy = true;
+        
         super.paintComponent(g);
         
 //        System.out.printf("In paintComponent: theseAsteroids.size() = %d\n",theseAsteroids.size());
-        
-        Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
-        it.forEachRemaining((ag)->{
-            g.drawOval(ag.getX(),ag.getY(),ag.getR(),ag.getR());
-//            System.out.printf("(%d,%d)",ag.getX(),ag.getY());
-        });
+        synchronized(this){
+//            System.out.printf("paintComponent theseAsteroids.size=%d\t", theseAsteroids.size());
+//            if(theseAsteroids.size()>0)
+//                    System.out.printf("(x=%d)\n",theseAsteroids.get(0).getX());
+            Iterator<AsteroidGraphic> it = theseAsteroids.listIterator();
+            it.forEachRemaining((ag)->{
+                g.drawOval(ag.getX(),ag.getY(),ag.getR(),ag.getR());
+    //            System.out.printf("(%d,%d)",ag.getX(),ag.getY());
+            });
+        }
 //        System.out.printf("\n");
-        
+//        isBusy = false;
     }
 }

@@ -1013,8 +1013,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     
     private void jButton_testRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_testRedrawActionPerformed
 //        drawLatestScene();
-        AnimateTask task = new AnimateTask();
-        task.execute();
+        Animator.getAnimateTask(this).execute();
     }//GEN-LAST:event_jButton_testRedrawActionPerformed
     private void drawLatestScene(){
         ArrayList<gravsim.State> simState = simResults.getState();
@@ -1028,7 +1027,8 @@ public class GravSimGUI extends javax.swing.JFrame {
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
     }
-    private class SceneBounds{
+    
+    private static class SceneBounds{
         double minX;
         double maxX;
         double minY;
@@ -1064,9 +1064,17 @@ public class GravSimGUI extends javax.swing.JFrame {
             this(simState, defaultBufferSize);
         }
     }
-    
-    class AnimateTask extends SwingWorker<Void,Void>{
+    private static class Animator extends SwingWorker<Void,Void>{
         private boolean continueAnimating;
+        private final int minAnimationRefreshPeriod = 10; //milliseconds
+        
+        private static Animator animateTaskSingleton = new Animator();
+        private static GravSimGUI thisGUI;
+        private Animator(){}
+        public static Animator getAnimateTask(GravSimGUI useThisGUI){
+            thisGUI = useThisGUI;
+            return animateTaskSingleton;
+        }
         
         @Override
         public Void doInBackground(){
@@ -1079,25 +1087,30 @@ public class GravSimGUI extends javax.swing.JFrame {
             ArrayList<gravsim.State> simState = null;
             int thisIndex;
             while(continueAnimating &&
-                    jSlider_animationControl.getValue() < jSlider_animationControl.getMaximum()){
+                    this.thisGUI.jSlider_animationControl.getValue() < this.thisGUI.jSlider_animationControl.getMaximum()){
                 
-                thisIndex = jSlider_animationControl.getValue();
-                simState = simResults.getState(thisIndex);
+                thisIndex = this.thisGUI.jSlider_animationControl.getValue();
+                simState = this.thisGUI.simResults.getState(thisIndex);
                 thisSceneBounds = new SceneBounds(simState);
                 
-                paintPanel_test.drawScene(simState,
+                this.thisGUI.paintPanel_test.drawScene(simState,
                     thisSceneBounds.minX, thisSceneBounds.maxX,
                     thisSceneBounds.minY, thisSceneBounds.maxY);
-                
-                jSlider_animationControl.setValue(thisIndex +1);
+
+                this.thisGUI.jSlider_animationControl.setValue(thisIndex +1);
                 
                 try{
-                    java.util.concurrent.TimeUnit.MILLISECONDS.sleep(100);
+//                    System.out.printf("Animator Waiting\n");
+                    java.util.concurrent.TimeUnit.MILLISECONDS.sleep(this.minAnimationRefreshPeriod);
                 } catch (InterruptedException e){
                     e.printStackTrace();
                 }
             }
             return null;
+        }
+        
+        public void stopAnimation(){
+            this.continueAnimating = false;
         }
     }
     
