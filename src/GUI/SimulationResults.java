@@ -11,8 +11,12 @@ import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Set;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartMouseEvent;
+import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.PlotEntity;
+import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -94,7 +98,7 @@ public class SimulationResults {
         XYSeriesCollection thisDataset = new XYSeriesCollection();
         
         objectLocations.forEach((name,locator)->{
-            XYSeries thisSeries = new XYSeries(name);
+            XYSeries thisSeries = new XYSeries(String.format("Asteroid %s",name));
             for(int i = 0; i < locator.timeIndex.size(); i++){
                 int timeIndex = locator.timeIndex.get(i);
                 double normalizedA = simStates.get(timeIndex).get(locator.stateIndex.get(i)).getA().getMagnitude() *
@@ -104,12 +108,34 @@ public class SimulationResults {
                         (double) simTimes.get(timeIndex),
                         (double) normalizedA);
             }
-            
+
             thisDataset.addSeries(thisSeries);
         });
         
         JFreeChart chart = ChartFactory.createScatterPlot("Normalized Acceleration", "Simulation Time", "(m/s^2)*m^2", thisDataset);
         ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.addChartMouseListener(new ChartMouseListener(){
+            @Override
+            public void chartMouseClicked(ChartMouseEvent cme) {
+                System.out.printf("%s\n",cme.getEntity().toString());
+                XYItemEntity thisEntity = null;
+                try{
+                    thisEntity = (XYItemEntity) cme.getEntity();
+                } catch(Exception e){
+                    return;
+                }
+                XYSeriesCollection thisSeries = (XYSeriesCollection) thisEntity.getDataset();
+                System.out.printf("\tSeries Index %d\n",thisEntity.getSeriesIndex());
+                System.out.printf("\t(X:%f,Y:%f)\n",
+                        thisSeries.getXValue(thisEntity.getSeriesIndex(),thisEntity.getItem()),
+                        thisSeries.getYValue(thisEntity.getSeriesIndex(),thisEntity.getItem()));
+//                System.out.printf("\ty:%d\n",cme.getTrigger().getY());
+            }
+            @Override
+            public void chartMouseMoved(ChartMouseEvent cme) {
+//                System.out.printf("ChartMouseMoved\n");
+            }
+        });
         thisPanel.removeAll();
         thisPanel.setLayout(new java.awt.BorderLayout());
         thisPanel.add(chartPanel,java.awt.BorderLayout.CENTER);
