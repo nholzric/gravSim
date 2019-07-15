@@ -83,4 +83,6 @@ public class SimulationResults {
     public int simStatesSize(){
         return this.simStates.size();
     }
+    
+    
 }

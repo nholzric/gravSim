@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Nathan/Documents/GitHub/gravSim/src/GUI/paintPanel.java</file>
+            <file>file:/C:/Users/Nathan/Documents/GitHub/gravSim/src/GUI/GravSimGUI.java</file>
+            <file>file:/C:/Users/Nathan/Documents/GitHub/gravSim/src/gravsim/State.java</file>
+            <file>file:/C:/Users/Nathan/Documents/GitHub/gravSim/src/gravsim/Coordinate.java</file>
+            <file>file:/C:/Users/Nathan/Documents/GitHub/gravSim/src/GUI/SimulationResults.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -283,6 +283,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel_analysis = new javax.swing.JPanel();
         jComboBox_uniqueObjects = new javax.swing.JComboBox<>();
         jPanel_analysisGraph = new javax.swing.JPanel();
+        jButton_debug = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         paintPanel_test = new GUI.paintPanel();
         jButton_playAnimation = new javax.swing.JButton();
@@ -592,6 +593,11 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel_simulationResults.setLayout(new java.awt.GridLayout(1, 0));
 
         jComboBox_uniqueObjects.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox_uniqueObjects.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox_uniqueObjectsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_analysisGraphLayout = new javax.swing.GroupLayout(jPanel_analysisGraph);
         jPanel_analysisGraph.setLayout(jPanel_analysisGraphLayout);
@@ -601,8 +607,15 @@ public class GravSimGUI extends javax.swing.JFrame {
         );
         jPanel_analysisGraphLayout.setVerticalGroup(
             jPanel_analysisGraphLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 283, Short.MAX_VALUE)
         );
+
+        jButton_debug.setText("debug");
+        jButton_debug.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_debugActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_analysisLayout = new javax.swing.GroupLayout(jPanel_analysis);
         jPanel_analysis.setLayout(jPanel_analysisLayout);
@@ -614,7 +627,9 @@ public class GravSimGUI extends javax.swing.JFrame {
                     .addComponent(jPanel_analysisGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel_analysisLayout.createSequentialGroup()
                         .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 403, Short.MAX_VALUE)))
+                        .addGap(81, 81, 81)
+                        .addComponent(jButton_debug)
+                        .addGap(0, 255, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel_analysisLayout.setVerticalGroup(
@@ -623,8 +638,10 @@ public class GravSimGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel_analysisGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(235, 235, 235))
+                .addGroup(jPanel_analysisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox_uniqueObjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_debug))
+                .addGap(233, 233, 233))
         );
 
         jPanel_simulationResults.add(jPanel_analysis);
@@ -639,7 +656,7 @@ public class GravSimGUI extends javax.swing.JFrame {
         );
         paintPanel_testLayout.setVerticalGroup(
             paintPanel_testLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 496, Short.MAX_VALUE)
+            .addGap(0, 473, Short.MAX_VALUE)
         );
 
         jButton_playAnimation.setText("Play");
@@ -695,18 +712,18 @@ public class GravSimGUI extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(paintPanel_test, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSlider_animationControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(paintPanel_test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSlider_animationControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton_playAnimation))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton_stepForward)
-                        .addComponent(jButton_stepBackward))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_stepForward)
+                    .addComponent(jButton_stepBackward)
                     .addComponent(jLabel_simulationTime))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel_simulationResults.add(jPanel1);
@@ -767,11 +784,12 @@ public class GravSimGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel15)
-                    .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jProgressBar_simProgress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
+                .addGap(2, 2, 2))
         );
 
         pack();
@@ -1073,6 +1091,18 @@ public class GravSimGUI extends javax.swing.JFrame {
         jSlider_animationControl.setValue(jSlider_animationControl.getValue()+1);
     }//GEN-LAST:event_jButton_stepForwardActionPerformed
 
+    private void jComboBox_uniqueObjectsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_uniqueObjectsActionPerformed
+        System.out.printf("Action Performed\n");
+        String selectedObject = (String) jComboBox_uniqueObjects.getSelectedItem();
+//        String selectedObject = (String) jComboBox_uniqueObjects.getItemAt(jComboBox_uniqueObjects.getSelectedIndex());
+        System.out.printf("Selected %s\n",selectedObject);
+    }//GEN-LAST:event_jComboBox_uniqueObjectsActionPerformed
+
+    private void jButton_debugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_debugActionPerformed
+        System.out.printf("Debug\n");
+        jComboBox_uniqueObjectsActionPerformed(evt);
+    }//GEN-LAST:event_jButton_debugActionPerformed
+
     private boolean isPopulationEmpty(){
         return jTable_population.getRowCount()==0;
     }
@@ -1220,6 +1250,7 @@ public class GravSimGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_debug;
     private javax.swing.JButton jButton_generatePopulation;
     private javax.swing.JButton jButton_loadPopulation;
     private javax.swing.JButton jButton_playAnimation;
