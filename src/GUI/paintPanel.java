@@ -73,9 +73,11 @@ public class paintPanel extends javax.swing.JPanel{
         
         int pixelMaxX = this.getSize().width;
         int pixelMaxY = this.getSize().height;
+//        System.out.printf("pixelMaxX:%d pixelMaxY: %d\n",pixelMaxX,pixelMaxY);
         int pixelMinX = 0;
         int pixelMinY = 0;
-        double pixelHWRatio = (pixelMaxY-pixelMinY)/(pixelMaxX-pixelMinX);
+        double pixelHWRatio = (double)((pixelMaxY-pixelMinY))/((double)(pixelMaxX-pixelMinX));
+//        System.out.printf("(%d-%d)/(%d-%d)\n",pixelMaxY,pixelMinY,pixelMaxX,pixelMinX);
         double sceneHeight = sceneMaxY - sceneMinY;
         double sceneWidth = sceneMaxX - sceneMinX;
         double sceneHWRatio = sceneHeight/sceneWidth;
@@ -86,12 +88,14 @@ public class paintPanel extends javax.swing.JPanel{
             double additionalWidth = sceneHeight/pixelHWRatio - sceneWidth;
             sceneMinX = sceneMinX - additionalWidth/2;
             sceneMaxX = sceneMaxX + additionalWidth/2;
+//            System.out.printf("Scene is too tall (%f/%f)\n",pixelHWRatio,sceneHWRatio);
         }
         else{
             //Scene is too wide therefore increase scene height
             double additionalHeight = sceneWidth*pixelHWRatio - sceneWidth;
             sceneMinY = sceneMinY - additionalHeight/2;
             sceneMaxY = sceneMaxY + additionalHeight/2;
+//            System.out.printf("Scene is too wide (%f/%f)\n",pixelHWRatio,sceneHWRatio);
         }
         
         LinearTransform xSceneToPixel = new LinearTransform(sceneMinX,(double) pixelMinX,sceneMaxX,(double) pixelMaxY);
