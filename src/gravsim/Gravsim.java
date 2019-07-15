@@ -164,7 +164,7 @@ public class Gravsim {
     public ArrayList<State> getSimState(){
         ArrayList<State> simState = new ArrayList<State>();
         bodyList.stream().forEach((b) -> {
-            simState.add(new State(b.getName(),b.getPosition(),b.getVelocity())); 
+            simState.add(new State(b.getName(),b.getPosition(),b.getVelocity(),b.getAcceleration())); 
         });
         
         return simState;

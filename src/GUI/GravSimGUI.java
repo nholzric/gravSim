@@ -1099,8 +1099,7 @@ public class GravSimGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox_uniqueObjectsActionPerformed
 
     private void jButton_debugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_debugActionPerformed
-        System.out.printf("Debug\n");
-        jComboBox_uniqueObjectsActionPerformed(evt);
+        simResults.graphAccelerations(jPanel_analysisGraph);
     }//GEN-LAST:event_jButton_debugActionPerformed
 
     private boolean isPopulationEmpty(){

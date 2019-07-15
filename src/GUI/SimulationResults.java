@@ -10,6 +10,11 @@ import gravsim.State;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Set;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -84,5 +89,31 @@ public class SimulationResults {
         return this.simStates.size();
     }
     
+    public void graphAccelerations(javax.swing.JPanel thisPanel){
+        
+        XYSeriesCollection thisDataset = new XYSeriesCollection();
+        
+        objectLocations.forEach((name,locator)->{
+            XYSeries thisSeries = new XYSeries(name);
+            for(int i = 0; i < locator.timeIndex.size(); i++){
+                int timeIndex = locator.timeIndex.get(i);
+                double normalizedA = simStates.get(timeIndex).get(locator.stateIndex.get(i)).getA().getMagnitude() *
+                        simStates.get(timeIndex).get(locator.stateIndex.get(i)).getP().getMagnitude() *
+                        simStates.get(timeIndex).get(locator.stateIndex.get(i)).getP().getMagnitude();
+                thisSeries.add(
+                        (double) simTimes.get(timeIndex),
+                        (double) normalizedA);
+            }
+            
+            thisDataset.addSeries(thisSeries);
+        });
+        
+        JFreeChart chart = ChartFactory.createScatterPlot("Normalized Acceleration", "Simulation Time", "(m/s^2)*m^2", thisDataset);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        thisPanel.removeAll();
+        thisPanel.setLayout(new java.awt.BorderLayout());
+        thisPanel.add(chartPanel,java.awt.BorderLayout.CENTER);
+        thisPanel.validate();
+    }
     
 }
